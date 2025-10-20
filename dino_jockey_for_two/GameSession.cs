@@ -26,7 +26,7 @@ public class GameSession
         _floorSprite = floorSprite;
         _floorSprite.LayerDepth = 0f;
         _floorSprite.Scale = new Vector2(1f, 1f);
-        _floorY = _viewport.Height - _floorSprite.Height;
+        _floorY = _viewport.Height + _viewport.Y - _floorSprite.Height;
         _player = new Player(dinoAtlas, _floorY, jumpKey);
     }
 

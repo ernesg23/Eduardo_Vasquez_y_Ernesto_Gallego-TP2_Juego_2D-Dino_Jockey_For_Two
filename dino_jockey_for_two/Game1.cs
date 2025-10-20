@@ -10,12 +10,13 @@ namespace dino_jockey_for_two;
 
 public class Game1 : Core
 {
-    private const int WIDTH = 720;
-    private const int HEIGTH = 576;
+    private const int WIDTH = 1280;
+    private const int HEIGTH = 720;
     private GameSession _game1;
+    private GameSession _game2;
     private InputManager _inputManager = new InputManager();
 
-    public Game1() : base("Dino Jockey", WIDTH, HEIGTH, false) { }
+    public Game1() : base("Dino Jockey", WIDTH, HEIGTH, fullScreen: false) { }
 
     protected override void LoadContent()
     {
@@ -30,6 +31,13 @@ public class Game1 : Core
             jumpKey: Keys.Up,
             name: "Player 1"
         );
+        _game2 = new GameSession(
+            viewport: new Rectangle(0, HALF_HEIGTH, Window.ClientBounds.Width, HALF_HEIGTH),
+            floorSprite: floor.CreateSprite("floor"),
+            dinoAtlas: dinoAtlas,
+            jumpKey: Keys.Z,
+            name: "Player 2"
+        );
     }
 
 
@@ -42,6 +50,7 @@ public class Game1 : Core
 
         _inputManager.Update(gameTime);
         _game1?.Update(gameTime, _inputManager);
+        _game2?.Update(gameTime, _inputManager);
     }
 
 
@@ -51,6 +60,7 @@ public class Game1 : Core
         SpriteBatch.Begin(samplerState: SamplerState.PointClamp, sortMode: SpriteSortMode.FrontToBack);
 
         _game1.Draw(SpriteBatch);
+        _game2.Draw(SpriteBatch);
 
         SpriteBatch.End();
         base.Draw(gameTime);
