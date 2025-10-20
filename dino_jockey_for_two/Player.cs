@@ -1,75 +1,124 @@
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MonoGameLibrary;
 using MonoGameLibrary.Graphics;
+using Microsoft.Xna.Framework.Graphics;
+using MonoGameLibrary.Input;
+using MonoGameLibrary.Collider;
+using System.Threading;
+using System;
 
 public class Player
 {
-    private Animation walkAnimation;
-    private Animation jumpAnimation;
+    private const float JUMP_FORCE = -15f;
+    private const float IMPULSE_JUMP = -.4f;
+    private const float GRAVITY = .7f;
+    private const float MAX_FALL_SPEED = 12f;
+    private const int MAX_JUMP_TIME = 250;
 
-    public AnimatedSprite Sprite { get; private set; }
-    public Vector2 Position { get; private set; }
-    public float SpeedY { get; private set; }
+    private Keys _jumpKey;
+    private bool _isJumping;
+    private double _jumpTime;
+    public Vector2 Position;
+    public Vector2 Velocity;
+    public Box Collider;
+    private AnimatedSprite _sprite;
+    private Dictionary<string, Animation> _animations;
+
+    public bool IsDead { get; private set; }
     public bool InFloor { get; private set; }
-    public Keys JumpKey { get; private set; }
+    public bool StartAnim { get; set; }
 
-    private float gravity = 0.5f;
-    private float impulseJump = -10f;
-    private float floorY;
+    private float _floorY;
 
-    public Player(Animation walkAnim, Animation jumpAnim, Vector2 posicionInicial, Keys teclaSalto, float floorY)
+    public Player(TextureAtlas dinoAtlas, float floorY, Keys jumpKey)
     {
-        walkAnimation = walkAnim;
-        jumpAnimation = jumpAnim;
+        _animations = new Dictionary<string, Animation>();
+        foreach (var anim in new[] { "dino_walk", "dino_jump", "dino_dead" })
+            _animations.Add(anim, dinoAtlas.GetAnimation(anim));
 
-        Sprite = new AnimatedSprite(walkAnimation);
-        Position = posicionInicial;
-        JumpKey = teclaSalto;
-        InFloor = true;
-        SpeedY = 0;
-        this.floorY = floorY;
+        _sprite = new AnimatedSprite(_animations["dino_walk"]);
+        _sprite.CenterOrigin();
+        _sprite.Scale = new Vector2(1.5f, 1.5f);
+
+        _floorY = floorY - _sprite.Height/4;
+        Position = new Vector2(0f, _floorY);
+        Velocity = Vector2.Zero;
+
+        Collider = new Box(Vector2.Zero, (int)(_sprite.Width * .65f), (int)(_sprite.Height * .82f));
+        Collider.MoveCentered(Position);
+
+        _jumpKey = jumpKey;
+        Reset();
     }
 
-
-    public void Update(GameTime gameTime, KeyboardState keyboard)
+    public void Reset()
     {
-        if (InFloor && Sprite.Animation != walkAnimation)
-            Sprite.Animation = walkAnimation;
-        else if (!InFloor && Sprite.Animation != jumpAnimation)
-            Sprite.Animation = jumpAnimation;
+        StartAnim = true;
+        IsDead = false;
+        InFloor = false;
+        _isJumping = true;
+        _jumpTime = 0;
+        Position = new Vector2(-_sprite.Width, _floorY - _sprite.Height/4);
+        Velocity = Vector2.Zero;
+    }
 
-        Sprite.Update(gameTime);
+    public void Update(GameTime gameTime, InputManager inputManager)
+    {
+        float deltaTime = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
-        if (keyboard.IsKeyDown(JumpKey) && InFloor)
+        if (!StartAnim && !IsDead)
         {
-            SpeedY = impulseJump;
-            InFloor = false;
+            if (InFloor && inputManager.Keyboard.IsKeyDown(_jumpKey))
+            {
+                _isJumping = true;
+                InFloor = false;
+                Velocity.Y = JUMP_FORCE;
+                _jumpTime = 0;
+            }
+            else if (_isJumping && inputManager.Keyboard.IsKeyDown(_jumpKey))
+            {
+                _jumpTime += deltaTime;
+                if (_jumpTime < MAX_JUMP_TIME)
+                    Velocity.Y += IMPULSE_JUMP;
+            }
+            else if (_isJumping && inputManager.Keyboard.WasKeyJustReleased(_jumpKey))
+                _isJumping = false;
         }
 
-        if (!InFloor && keyboard.IsKeyDown(JumpKey) && SpeedY < 0)
-            SpeedY += gravity * 0.6f;
-        else
-            SpeedY += gravity;
+        Velocity.Y += GRAVITY;
+        if (Velocity.Y > MAX_FALL_SPEED)
+            Velocity.Y = MAX_FALL_SPEED;
 
-        Position = new Vector2(Position.X, Position.Y + SpeedY);
+        Position += Velocity;
+        Collider.MoveCentered(Position);
 
-        if (Position.Y >= floorY)
+        if (Position.Y >= _floorY)
         {
-            Position = new Vector2(Position.X, floorY);
-            SpeedY = 0;
+            Position = new Vector2(Position.X, _floorY);
+            Velocity.Y = 0;
             InFloor = true;
+            _isJumping = false;
         }
+
+        if (IsDead)
+            _sprite.Animation = _animations["dino_dead"];
+        else if (!InFloor)
+            _sprite.Animation = _animations["dino_jump"];
+        else
+            _sprite.Animation = _animations["dino_walk"];
+
+        _sprite.Update(gameTime);
+    }
+
+    public void Kill()
+    {
+        IsDead = true;
+        Velocity = Vector2.Zero;
     }
 
     public void Draw(SpriteBatch spriteBatch)
     {
-        Sprite.Draw(spriteBatch, Position);
-    }
-
-    public Rectangle GetRect()
-    {
-        return new Rectangle((int)Position.X, (int)Position.Y, (int)Sprite.Width, (int)Sprite.Height);
+        _sprite.Draw(spriteBatch, Position);
     }
 }

@@ -1,58 +1,58 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGameLibrary;
 using MonoGameLibrary.Graphics;
+using MonoGameLibrary.Input;
 
 namespace dino_jockey_for_two;
 
 public class Game1 : Core
 {
-    private Player _player1;
-    private Player _player2;
-    private TextureAtlas _atlas;
+    private const int WIDTH = 720;
+    private const int HEIGTH = 576;
+    private GameSession _game1;
+    private InputManager _inputManager = new InputManager();
 
-    public Game1() : base("Dino Jockey", 1280, 720, true) { }
+    public Game1() : base("Dino Jockey", WIDTH, HEIGTH, false) { }
 
     protected override void LoadContent()
     {
-        _atlas = TextureAtlas.FromFile(Content, "images/atlas-definition.xml");
+        var floor = TextureAtlas.FromFile(Content, "images/floor-definition.xml");
+        var dinoAtlas = TextureAtlas.FromFile(Content, "images/atlas-definition.xml");
+        int HALF_HEIGTH = Window.ClientBounds.Height / 2;
 
-        var walkAnim = _atlas.GetAnimation("dino_walk");
-        var jumpAnim = _atlas.GetAnimation("dino_jump");
-
-        _player1 = new Player(walkAnim, jumpAnim, new Vector2(100, 200), Keys.Space, 200);
-        _player2 = new Player(walkAnim, jumpAnim, new Vector2(100, 400), Keys.Up, 400);
-
-        _player1.Sprite.Scale = new Vector2(2.0f, 2.0f);
-        _player2.Sprite.Scale = new Vector2(2.0f, 2.0f);
+        _game1 = new GameSession(
+            viewport: new Rectangle(0, 0, Window.ClientBounds.Width, HALF_HEIGTH),
+            floorSprite: floor.CreateSprite("floor"),
+            dinoAtlas: dinoAtlas,
+            jumpKey: Keys.Up,
+            name: "Player 1"
+        );
     }
+
 
     protected override void Update(GameTime gameTime)
     {
+        if (Keyboard.GetState().IsKeyDown(Keys.F4)) { }
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
             Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-        var keyboard = Keyboard.GetState();
-
-        _player1.Update(gameTime, keyboard);
-        _player2.Update(gameTime, keyboard);
-
-        base.Update(gameTime);
+        _inputManager.Update(gameTime);
+        _game1?.Update(gameTime, _inputManager);
     }
+
 
     protected override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.Clear(Color.CornflowerBlue);
+        GraphicsDevice.Clear(Color.White);
+        SpriteBatch.Begin(samplerState: SamplerState.PointClamp, sortMode: SpriteSortMode.FrontToBack);
 
-        SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
-
-        _player1.Draw(SpriteBatch);
-        _player2.Draw(SpriteBatch);
+        _game1.Draw(SpriteBatch);
 
         SpriteBatch.End();
-
         base.Draw(gameTime);
     }
 }
