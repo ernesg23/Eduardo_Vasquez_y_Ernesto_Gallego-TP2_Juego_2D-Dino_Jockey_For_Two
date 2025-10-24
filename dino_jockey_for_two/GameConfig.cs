@@ -16,7 +16,7 @@ public static class GameConfig
     public const float ColliderWidthRatio = 0.65f;
     public const float ColliderHeightRatio = 0.82f;
     public const float PlayerScale = 1.5f;
-    public const float ObstacleSpeed = 300f;
+    public const float ObstacleSpeed = 5f;
     public const int ObstacleSpawnInterval = 2000;
     public const float ObstacleMinSpawnInterval = 800f;
     public const float ObstacleSpawnIntervalDecrement = 50f;

@@ -11,6 +11,7 @@ namespace MonoGameLibrary.Graphics;
 
 public class TextureAtlas
 {
+    private GraphicsDevice _graphicsDevice;
     private Dictionary<string, TextureRegion> _regions;
 
     /// <summary>
@@ -25,8 +26,9 @@ public class TextureAtlas
     /// <summary>
     /// Creates a new texture atlas.
     /// </summary>
-    public TextureAtlas()
+    public TextureAtlas(GraphicsDevice graphicsDevice)
     {
+        _graphicsDevice = graphicsDevice;
         _regions = new Dictionary<string, TextureRegion>();
         _animations = new Dictionary<string, Animation>();
     }
@@ -38,6 +40,16 @@ public class TextureAtlas
     public TextureAtlas(Texture2D texture)
     {
         Texture = texture;
+        _graphicsDevice = texture?.GraphicsDevice;
+        _regions = new Dictionary<string, TextureRegion>();
+        _animations = new Dictionary<string, Animation>();
+    }
+
+    /// <summary>
+    /// Creates a new texture atlas without initial parameters.
+    /// </summary>
+    public TextureAtlas()
+    {
         _regions = new Dictionary<string, TextureRegion>();
         _animations = new Dictionary<string, Animation>();
     }
@@ -107,6 +119,12 @@ public class TextureAtlas
                 // So we will retrieve that value then use the content manager to load the texture.
                 string texturePath = root.Element("Texture").Value;
                 atlas.Texture = content.Load<Texture2D>(texturePath);
+                
+                // Set the GraphicsDevice from the loaded texture
+                if (atlas.Texture != null)
+                {
+                    atlas._graphicsDevice = atlas.Texture.GraphicsDevice;
+                }
 
                 // The <Regions> element contains individual <Region> elements, each one describing
                 // a different texture region within the atlas.  
@@ -151,7 +169,7 @@ public class TextureAtlas
                 //
                 // So we retrieve all of the <Animation> elements then loop through each one
                 // and generate a new Animation instance from it and add it to this atlas.
-                var animationElements = root.Element("Animations").Elements("Animation");
+                var animationElements = root.Element("Animations")?.Elements("Animation");
 
                 if (animationElements != null)
                 {
@@ -225,6 +243,7 @@ public class TextureAtlas
     {
         return _animations.Remove(animationName);
     }
+
     /// <summary>
     /// Creates a new animated sprite using the animation from this texture atlas with the specified name.
     /// </summary>
@@ -236,4 +255,12 @@ public class TextureAtlas
         return new AnimatedSprite(animation);
     }
 
+    /// <summary>
+    /// Gets the GraphicsDevice associated with this texture atlas.
+    /// </summary>
+    /// <returns>The GraphicsDevice instance, or null if not available.</returns>
+    public GraphicsDevice GetGraphicsDevice()
+    {
+        return _graphicsDevice;
+    }
 }

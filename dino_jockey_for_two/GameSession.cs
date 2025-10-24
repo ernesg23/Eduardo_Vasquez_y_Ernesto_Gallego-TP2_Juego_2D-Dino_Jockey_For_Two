@@ -18,6 +18,9 @@ public class GameSession
     private TimeSpan _obstacleSpawnTimer;
     private Texture2D _debugTexture;
     private bool _debugTextureInitialized;
+    private Random _random;
+    private float _currentObstacleSpawnInterval;
+    private Texture2D _obstacleTexture;
 
     public GameSession(
         Rectangle viewport,
@@ -36,21 +39,38 @@ public class GameSession
         _player = new Player(dinoAtlas, _floorY, jumpKey);
         _obstacles = new List<Obstacle>();
         _obstacleSpawnTimer = TimeSpan.Zero;
+        _random = new Random();
+        _currentObstacleSpawnInterval = GameConfig.ObstacleSpawnInterval;
+
+        CreateObstacleTexture();
+    }
+
+    private void CreateObstacleTexture()
+    {
+        _obstacleTexture = new Texture2D(_player.GetGraphicsDevice(), 40, 60);
+        Color[] data = new Color[40 * 60];
+        for (int i = 0; i < data.Length; i++)
+        {
+            data[i] = Color.Green; // Obstáculos verdes para distinguirlos
+        }
+        _obstacleTexture.SetData(data);
     }
 
     public void Update(GameTime gameTime, InputManager inputManager)
     {
         HandleInitialAnimation();
         _player.Update(gameTime, inputManager);
+        UpdateObstacleSpawning(gameTime);
         UpdateObstacles(gameTime);
         CheckCollisions();
         UpdateScore(gameTime);
+        IncreaseDifficulty();
     }
 
     private void HandleInitialAnimation()
     {
         if (!_player.StartAnim) return;
-        
+
         float targetX = _viewport.Width * GameConfig.PlayerStartPositionRatio;
         if (_player.Position.X < targetX)
         {
@@ -63,20 +83,55 @@ public class GameSession
         }
     }
 
+    private void UpdateObstacleSpawning(GameTime gameTime)
+    {
+        if (_player.StartAnim || _player.IsDead) return;
+
+        _obstacleSpawnTimer += gameTime.ElapsedGameTime;
+
+        if (_obstacleSpawnTimer.TotalMilliseconds >= _currentObstacleSpawnInterval)
+        {
+            SpawnObstacle();
+            _obstacleSpawnTimer = TimeSpan.Zero;
+        }
+    }
+
+    private void SpawnObstacle()
+    {
+        float obstacleY = _floorY - _obstacleTexture.Height + GameConfig.ObstacleSpawnYOffset;
+        Vector2 startPosition = new Vector2(_viewport.Width, obstacleY);
+
+        // Se crea TextureRegion a partir de la Texture2D y se usa para construir el Sprite
+        var obstacleRegion = new TextureRegion(_obstacleTexture, 0, 0, _obstacleTexture.Width, _obstacleTexture.Height);
+        var obstacleSprite = new Sprite(obstacleRegion);
+        obstacleSprite.Scale = Vector2.One;
+
+        Obstacle obstacle = new Obstacle(
+            obstacleSprite,
+            startPosition,
+            GameConfig.ObstacleSpeed,
+            _viewport.Width
+        );
+
+        _obstacles.Add(obstacle);
+    }
+
     private void UpdateObstacles(GameTime gameTime)
     {
-        _obstacleSpawnTimer += gameTime.ElapsedGameTime;
-        
-        foreach (var obstacle in _obstacles)
+        for (int i = _obstacles.Count - 1; i >= 0; i--)
         {
-            obstacle.Update(gameTime);
+            _obstacles[i].Update(gameTime);
+            if (_obstacles[i].ShouldRemove)
+            {
+                _obstacles.RemoveAt(i);
+            }
         }
-        
-        _obstacles.RemoveAll(obstacle => obstacle.ShouldRemove);
     }
 
     private void CheckCollisions()
     {
+        if (_player.IsDead) return;
+
         foreach (var obstacle in _obstacles)
         {
             if (_player.Collider.CollidesWith(obstacle.Collider))
@@ -89,19 +144,28 @@ public class GameSession
 
     private void UpdateScore(GameTime gameTime)
     {
-        if (!_player.IsDead)
+        if (!_player.IsDead && !_player.StartAnim)
         {
             Score += (int)gameTime.ElapsedGameTime.TotalMilliseconds / 100;
+        }
+    }
+
+    private void IncreaseDifficulty()
+    {
+        if (!_player.IsDead && !_player.StartAnim)
+        {
+            float newInterval = GameConfig.ObstacleSpawnInterval - (Score * 0.01f);
+            _currentObstacleSpawnInterval = Math.Max(newInterval, GameConfig.ObstacleMinSpawnInterval);
         }
     }
 
     public void Draw(SpriteBatch spriteBatch)
     {
         InitializeDebugTexture(spriteBatch.GraphicsDevice);
-        
+
         _floorSprite.Draw(spriteBatch, new Vector2(0, _floorY));
         _player.Draw(spriteBatch);
-        
+
         foreach (var obstacle in _obstacles)
         {
             obstacle.Draw(spriteBatch);
@@ -110,6 +174,11 @@ public class GameSession
         if (_debugTexture != null)
         {
             spriteBatch.Draw(_debugTexture, _player.Collider.Bounds, Color.Red * 0.5f);
+
+            foreach (var obstacle in _obstacles)
+            {
+                spriteBatch.Draw(_debugTexture, obstacle.Collider.Bounds, Color.Blue * 0.5f);
+            }
         }
     }
 
@@ -126,7 +195,10 @@ public class GameSession
     public void UnloadContent()
     {
         _debugTexture?.Dispose();
+        _obstacleTexture?.Dispose();
         _debugTexture = null;
+        _obstacleTexture = null;
         _debugTextureInitialized = false;
     }
 }
+  

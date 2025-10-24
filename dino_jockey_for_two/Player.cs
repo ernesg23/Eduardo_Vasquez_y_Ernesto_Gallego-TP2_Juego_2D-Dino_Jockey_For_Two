@@ -18,6 +18,8 @@ public class Player
     private Dictionary<string, Animation> _animations;
     private float _floorY;
 
+    private GraphicsDevice _graphicsDevice;
+
     public bool IsDead { get; private set; }
     public bool InFloor { get; private set; }
     public bool StartAnim { get; set; }
@@ -37,12 +39,14 @@ public class Player
 
         _floorY = floorY - _sprite.Height / 4;
         _jumpKey = jumpKey;
-        
+
         Collider = new Box(
-            Vector2.Zero, 
-            (int)(_sprite.Width * GameConfig.ColliderWidthRatio), 
+            Vector2.Zero,
+            (int)(_sprite.Width * GameConfig.ColliderWidthRatio),
             (int)(_sprite.Height * GameConfig.ColliderHeightRatio)
         );
+        
+        _graphicsDevice = dinoAtlas.GetGraphicsDevice();
         
         Reset();
     }
@@ -168,5 +172,10 @@ public class Player
     public void Draw(SpriteBatch spriteBatch)
     {
         _sprite.Draw(spriteBatch, Position);
+    }
+
+    public GraphicsDevice GetGraphicsDevice()
+    {
+        return _graphicsDevice;
     }
 }
