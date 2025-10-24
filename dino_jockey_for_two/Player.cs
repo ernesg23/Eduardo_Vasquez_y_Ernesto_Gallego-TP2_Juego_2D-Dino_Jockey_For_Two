@@ -45,10 +45,12 @@ public class Player
             (int)(_sprite.Width * GameConfig.ColliderWidthRatio),
             (int)(_sprite.Height * GameConfig.ColliderHeightRatio)
         );
-        
+
         _graphicsDevice = dinoAtlas.GetGraphicsDevice();
-        
+
         Reset();
+        _sprite.LayerDepth = 0.6f;
+
     }
 
     public void Reset()
@@ -65,35 +67,30 @@ public class Player
 
     public void Update(GameTime gameTime, InputManager inputManager)
     {
-        if (IsDead) return;
-
         float deltaTime = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
-        if (!StartAnim)
+        if (!IsDead)
         {
-            HandleJumpInput(inputManager, deltaTime);
+            if (!StartAnim)
+                HandleJumpInput(inputManager, deltaTime);
+
+            ApplyPhysics();
+            UpdatePosition();
+            UpdateCollider();
         }
 
-        ApplyPhysics();
-        UpdatePosition();
-        UpdateCollider();
         UpdateAnimation(gameTime);
     }
+
 
     private void HandleJumpInput(InputManager inputManager, float deltaTime)
     {
         if (InFloor && inputManager.Keyboard.IsKeyDown(_jumpKey))
-        {
             StartJump();
-        }
         else if (_isJumping && inputManager.Keyboard.IsKeyDown(_jumpKey))
-        {
             ContinueJump(deltaTime);
-        }
         else if (_isJumping && inputManager.Keyboard.WasKeyJustReleased(_jumpKey))
-        {
             EndJump();
-        }
     }
 
     private void StartJump()
@@ -108,9 +105,7 @@ public class Player
     {
         _jumpTime += deltaTime;
         if (_jumpTime < GameConfig.MaxJumpTime)
-        {
             Velocity.Y += GameConfig.PlayerJumpImpulse;
-        }
     }
 
     private void EndJump()
@@ -122,9 +117,7 @@ public class Player
     {
         Velocity.Y += GameConfig.Gravity;
         if (Velocity.Y > GameConfig.MaxFallSpeed)
-        {
             Velocity.Y = GameConfig.MaxFallSpeed;
-        }
     }
 
     private void UpdatePosition()
@@ -148,17 +141,11 @@ public class Player
     private void UpdateAnimation(GameTime gameTime)
     {
         if (IsDead)
-        {
             _sprite.Animation = _animations["dino_dead"];
-        }
         else if (!InFloor)
-        {
             _sprite.Animation = _animations["dino_jump"];
-        }
         else
-        {
             _sprite.Animation = _animations["dino_walk"];
-        }
 
         _sprite.Update(gameTime);
     }

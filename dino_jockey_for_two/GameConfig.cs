@@ -6,6 +6,7 @@ public static class GameConfig
     public const int ScreenHeight = 720;
     public const bool FullScreen = true;
     
+    public const float FloorScrollSpeed = 40f;
     public const float PlayerInitialSpeed = 5f;
     public const float PlayerStartPositionRatio = 0.5f;
     public const float PlayerJumpForce = -15f;
