@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGameLibrary;
@@ -10,49 +9,45 @@ namespace dino_jockey_for_two;
 
 public class Game1 : Core
 {
-    private const int WIDTH = 1280;
-    private const int HEIGTH = 720;
     private GameSession _game1;
-    private GameSession _game2;
+    /* private GameSession _game2; */
     private InputManager _inputManager = new InputManager();
 
-    public Game1() : base("Dino Jockey", WIDTH, HEIGTH, fullScreen: false) { }
+    public Game1() : base("Dino Jockey", GameConfig.ScreenWidth, GameConfig.ScreenHeight, GameConfig.FullScreen) { }
 
     protected override void LoadContent()
     {
         var floor = TextureAtlas.FromFile(Content, "images/floor-definition.xml");
         var dinoAtlas = TextureAtlas.FromFile(Content, "images/atlas-definition.xml");
-        int HALF_HEIGTH = Window.ClientBounds.Height / 2;
+        int halfHeight = Window.ClientBounds.Height / 2;
 
         _game1 = new GameSession(
-            viewport: new Rectangle(0, 0, Window.ClientBounds.Width, HALF_HEIGTH),
+            viewport: new Rectangle(0, 0, Window.ClientBounds.Width, halfHeight),
             floorSprite: floor.CreateSprite("floor"),
             dinoAtlas: dinoAtlas,
-            jumpKey: Keys.Up,
+            jumpKey: GameConfig.Player1JumpKey,
             name: "Player 1"
         );
-        _game2 = new GameSession(
-            viewport: new Rectangle(0, HALF_HEIGTH, Window.ClientBounds.Width, HALF_HEIGTH),
+        
+        /* _game2 = new GameSession(
+            viewport: new Rectangle(0, halfHeight, Window.ClientBounds.Width, halfHeight),
             floorSprite: floor.CreateSprite("floor"),
             dinoAtlas: dinoAtlas,
-            jumpKey: Keys.Z,
+            jumpKey: GameConfig.Player2JumpKey,
             name: "Player 2"
-        );
+        ); */
     }
-
 
     protected override void Update(GameTime gameTime)
     {
-        if (Keyboard.GetState().IsKeyDown(Keys.F4)) { }
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
             Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
         _inputManager.Update(gameTime);
-        _game1?.Update(gameTime, _inputManager);
-        _game2?.Update(gameTime, _inputManager);
+        _game1.Update(gameTime, _inputManager);
+        /* _game2.Update(gameTime, _inputManager); */
     }
-
 
     protected override void Draw(GameTime gameTime)
     {
@@ -60,7 +55,7 @@ public class Game1 : Core
         SpriteBatch.Begin(samplerState: SamplerState.PointClamp, sortMode: SpriteSortMode.FrontToBack);
 
         _game1.Draw(SpriteBatch);
-        _game2.Draw(SpriteBatch);
+        /* _game2.Draw(SpriteBatch); */
 
         SpriteBatch.End();
         base.Draw(gameTime);

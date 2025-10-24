@@ -5,17 +5,9 @@ using MonoGameLibrary.Graphics;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGameLibrary.Input;
 using MonoGameLibrary.Collider;
-using System.Threading;
-using System;
 
 public class Player
 {
-    private const float JUMP_FORCE = -15f;
-    private const float IMPULSE_JUMP = -.4f;
-    private const float GRAVITY = .7f;
-    private const float MAX_FALL_SPEED = 12f;
-    private const int MAX_JUMP_TIME = 250;
-
     private Keys _jumpKey;
     private bool _isJumping;
     private double _jumpTime;
@@ -24,31 +16,34 @@ public class Player
     public Box Collider;
     private AnimatedSprite _sprite;
     private Dictionary<string, Animation> _animations;
+    private float _floorY;
 
     public bool IsDead { get; private set; }
     public bool InFloor { get; private set; }
     public bool StartAnim { get; set; }
 
-    private float _floorY;
-
     public Player(TextureAtlas dinoAtlas, float floorY, Keys jumpKey)
     {
-        _animations = new Dictionary<string, Animation>();
-        foreach (var anim in new[] { "dino_walk", "dino_jump", "dino_dead" })
-            _animations.Add(anim, dinoAtlas.GetAnimation(anim));
+        _animations = new Dictionary<string, Animation>
+        {
+            ["dino_walk"] = dinoAtlas.GetAnimation("dino_walk"),
+            ["dino_jump"] = dinoAtlas.GetAnimation("dino_jump"),
+            ["dino_dead"] = dinoAtlas.GetAnimation("dino_dead")
+        };
 
         _sprite = new AnimatedSprite(_animations["dino_walk"]);
         _sprite.CenterOrigin();
-        _sprite.Scale = new Vector2(1.5f, 1.5f);
+        _sprite.Scale = new Vector2(GameConfig.PlayerScale, GameConfig.PlayerScale);
 
-        _floorY = floorY - _sprite.Height/4;
-        Position = new Vector2(0f, _floorY);
-        Velocity = Vector2.Zero;
-
-        Collider = new Box(Vector2.Zero, (int)(_sprite.Width * .65f), (int)(_sprite.Height * .82f));
-        Collider.MoveCentered(Position);
-
+        _floorY = floorY - _sprite.Height / 4;
         _jumpKey = jumpKey;
+        
+        Collider = new Box(
+            Vector2.Zero, 
+            (int)(_sprite.Width * GameConfig.ColliderWidthRatio), 
+            (int)(_sprite.Height * GameConfig.ColliderHeightRatio)
+        );
+        
         Reset();
     }
 
@@ -57,41 +52,80 @@ public class Player
         StartAnim = true;
         IsDead = false;
         InFloor = false;
-        _isJumping = true;
+        _isJumping = false;
         _jumpTime = 0;
-        Position = new Vector2(-_sprite.Width, _floorY - _sprite.Height/4);
+        Position = new Vector2(-_sprite.Width, _floorY);
         Velocity = Vector2.Zero;
+        Collider.MoveCentered(Position);
     }
 
     public void Update(GameTime gameTime, InputManager inputManager)
     {
+        if (IsDead) return;
+
         float deltaTime = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
-        if (!StartAnim && !IsDead)
+        if (!StartAnim)
         {
-            if (InFloor && inputManager.Keyboard.IsKeyDown(_jumpKey))
-            {
-                _isJumping = true;
-                InFloor = false;
-                Velocity.Y = JUMP_FORCE;
-                _jumpTime = 0;
-            }
-            else if (_isJumping && inputManager.Keyboard.IsKeyDown(_jumpKey))
-            {
-                _jumpTime += deltaTime;
-                if (_jumpTime < MAX_JUMP_TIME)
-                    Velocity.Y += IMPULSE_JUMP;
-            }
-            else if (_isJumping && inputManager.Keyboard.WasKeyJustReleased(_jumpKey))
-                _isJumping = false;
+            HandleJumpInput(inputManager, deltaTime);
         }
 
-        Velocity.Y += GRAVITY;
-        if (Velocity.Y > MAX_FALL_SPEED)
-            Velocity.Y = MAX_FALL_SPEED;
+        ApplyPhysics();
+        UpdatePosition();
+        UpdateCollider();
+        UpdateAnimation(gameTime);
+    }
 
+    private void HandleJumpInput(InputManager inputManager, float deltaTime)
+    {
+        if (InFloor && inputManager.Keyboard.IsKeyDown(_jumpKey))
+        {
+            StartJump();
+        }
+        else if (_isJumping && inputManager.Keyboard.IsKeyDown(_jumpKey))
+        {
+            ContinueJump(deltaTime);
+        }
+        else if (_isJumping && inputManager.Keyboard.WasKeyJustReleased(_jumpKey))
+        {
+            EndJump();
+        }
+    }
+
+    private void StartJump()
+    {
+        _isJumping = true;
+        InFloor = false;
+        Velocity.Y = GameConfig.PlayerJumpForce;
+        _jumpTime = 0;
+    }
+
+    private void ContinueJump(float deltaTime)
+    {
+        _jumpTime += deltaTime;
+        if (_jumpTime < GameConfig.MaxJumpTime)
+        {
+            Velocity.Y += GameConfig.PlayerJumpImpulse;
+        }
+    }
+
+    private void EndJump()
+    {
+        _isJumping = false;
+    }
+
+    private void ApplyPhysics()
+    {
+        Velocity.Y += GameConfig.Gravity;
+        if (Velocity.Y > GameConfig.MaxFallSpeed)
+        {
+            Velocity.Y = GameConfig.MaxFallSpeed;
+        }
+    }
+
+    private void UpdatePosition()
+    {
         Position += Velocity;
-        Collider.MoveCentered(Position);
 
         if (Position.Y >= _floorY)
         {
@@ -100,13 +134,27 @@ public class Player
             InFloor = true;
             _isJumping = false;
         }
+    }
 
+    private void UpdateCollider()
+    {
+        Collider.MoveCentered(Position);
+    }
+
+    private void UpdateAnimation(GameTime gameTime)
+    {
         if (IsDead)
+        {
             _sprite.Animation = _animations["dino_dead"];
+        }
         else if (!InFloor)
+        {
             _sprite.Animation = _animations["dino_jump"];
+        }
         else
+        {
             _sprite.Animation = _animations["dino_walk"];
+        }
 
         _sprite.Update(gameTime);
     }
