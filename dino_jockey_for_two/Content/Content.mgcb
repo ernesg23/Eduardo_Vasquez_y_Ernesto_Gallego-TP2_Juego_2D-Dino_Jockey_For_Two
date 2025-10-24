@@ -16,6 +16,12 @@
 #begin images/atlas-definition.xml
 /copy:images/atlas-definition.xml
 
+#begin images/button-for-8-bit-games-start-beginning-vector.png
+/copy:images/button-for-8-bit-games-start-beginning-vector.png
+
+#begin images/dinotitle.png
+/copy:images/dinotitle.png
+
 #begin images/floor-definition.xml
 /copy:images/floor-definition.xml
 

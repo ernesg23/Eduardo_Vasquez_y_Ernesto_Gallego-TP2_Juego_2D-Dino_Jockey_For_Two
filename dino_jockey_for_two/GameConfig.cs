@@ -2,8 +2,8 @@ using Microsoft.Xna.Framework.Input;
 
 public static class GameConfig
 {
-    public const int ScreenWidth = 1280;
-    public const int ScreenHeight = 720;
+    public const int ScreenWidth = 1920;
+    public const int ScreenHeight = 1080;
     public const bool FullScreen = true;
     
     public const float PlayerInitialSpeed = 5f;
