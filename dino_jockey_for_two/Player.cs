@@ -8,16 +8,16 @@ using MonoGameLibrary.Collider;
 
 public class Player
 {
-    private Keys _jumpKey;
+    public Keys JumpKey;
     private bool _isJumping;
     private double _jumpTime;
     public Vector2 Position;
     public Vector2 Velocity;
     public Box Collider;
+
     private AnimatedSprite _sprite;
     private Dictionary<string, Animation> _animations;
     private float _floorY;
-
     private GraphicsDevice _graphicsDevice;
 
     public bool IsDead { get; private set; }
@@ -36,18 +36,19 @@ public class Player
         _sprite = new AnimatedSprite(_animations["dino_walk"]);
         _sprite.CenterOrigin();
         _sprite.Scale = new Vector2(GameConfig.PlayerScale, GameConfig.PlayerScale);
+        _sprite.LayerDepth = 0.6f;
 
         _floorY = floorY - _sprite.Height / 4;
-        _jumpKey = jumpKey;
+        JumpKey = jumpKey;
 
         Collider = new Box(
             Vector2.Zero,
             (int)(_sprite.Width * GameConfig.ColliderWidthRatio),
             (int)(_sprite.Height * GameConfig.ColliderHeightRatio)
         );
-        
+
         _graphicsDevice = dinoAtlas.GetGraphicsDevice();
-        
+
         Reset();
     }
 
@@ -61,39 +62,42 @@ public class Player
         Position = new Vector2(-_sprite.Width, _floorY);
         Velocity = Vector2.Zero;
         Collider.MoveCentered(Position);
+
+        // Volver a sprite de caminar desde cero
+        SetSprite(_animations["dino_walk"]);
     }
 
     public void Update(GameTime gameTime, InputManager inputManager)
     {
-        if (IsDead) return;
+        float deltaTimeMs = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
-        float deltaTime = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-
-        if (!StartAnim)
+        if (!IsDead)
         {
-            HandleJumpInput(inputManager, deltaTime);
+            if (!StartAnim)
+                HandleJumpInput(inputManager, deltaTimeMs);
+
+            ApplyPhysics();
+            UpdatePosition();
+            UpdateCollider();
         }
 
-        ApplyPhysics();
-        UpdatePosition();
-        UpdateCollider();
         UpdateAnimation(gameTime);
     }
 
-    private void HandleJumpInput(InputManager inputManager, float deltaTime)
+    // Solo avanza animación, sin input ni física
+    public void UpdateAnimationOnly(GameTime gameTime)
     {
-        if (InFloor && inputManager.Keyboard.IsKeyDown(_jumpKey))
-        {
+        UpdateAnimation(gameTime);
+    }
+
+    private void HandleJumpInput(InputManager inputManager, float deltaTimeMs)
+    {
+        if (InFloor && inputManager.Keyboard.IsKeyDown(JumpKey))
             StartJump();
-        }
-        else if (_isJumping && inputManager.Keyboard.IsKeyDown(_jumpKey))
-        {
-            ContinueJump(deltaTime);
-        }
-        else if (_isJumping && inputManager.Keyboard.WasKeyJustReleased(_jumpKey))
-        {
+        else if (_isJumping && inputManager.Keyboard.IsKeyDown(JumpKey))
+            ContinueJump(deltaTimeMs);
+        else if (_isJumping && inputManager.Keyboard.WasKeyJustReleased(JumpKey))
             EndJump();
-        }
     }
 
     private void StartJump()
@@ -104,13 +108,11 @@ public class Player
         _jumpTime = 0;
     }
 
-    private void ContinueJump(float deltaTime)
+    private void ContinueJump(float deltaTimeMs)
     {
-        _jumpTime += deltaTime;
+        _jumpTime += deltaTimeMs;
         if (_jumpTime < GameConfig.MaxJumpTime)
-        {
             Velocity.Y += GameConfig.PlayerJumpImpulse;
-        }
     }
 
     private void EndJump()
@@ -122,9 +124,7 @@ public class Player
     {
         Velocity.Y += GameConfig.Gravity;
         if (Velocity.Y > GameConfig.MaxFallSpeed)
-        {
             Velocity.Y = GameConfig.MaxFallSpeed;
-        }
     }
 
     private void UpdatePosition()
@@ -147,17 +147,20 @@ public class Player
 
     private void UpdateAnimation(GameTime gameTime)
     {
+        // Evitamos reasignar la animación cada frame.
         if (IsDead)
         {
-            _sprite.Animation = _animations["dino_dead"];
+            // Ya en muerte: no cambiar nada; el sprite creado en Kill() se animará solo.
         }
         else if (!InFloor)
         {
-            _sprite.Animation = _animations["dino_jump"];
+            if (_sprite.Animation != _animations["dino_jump"])
+                _sprite.Animation = _animations["dino_jump"];
         }
         else
         {
-            _sprite.Animation = _animations["dino_walk"];
+            if (_sprite.Animation != _animations["dino_walk"])
+                _sprite.Animation = _animations["dino_walk"];
         }
 
         _sprite.Update(gameTime);
@@ -167,6 +170,21 @@ public class Player
     {
         IsDead = true;
         Velocity = Vector2.Zero;
+
+        // Asegurar arranque desde primer frame: recreamos el AnimatedSprite con la animación de muerte.
+        SetSprite(_animations["dino_dead"]);
+    }
+
+    private void SetSprite(Animation anim)
+    {
+        // Preservar propiedades y reiniciar anim desde frame 0 creando un nuevo AnimatedSprite
+        var prevScale = _sprite.Scale;
+        var prevLayer = _sprite.LayerDepth;
+
+        _sprite = new AnimatedSprite(anim);
+        _sprite.CenterOrigin();
+        _sprite.Scale = prevScale;
+        _sprite.LayerDepth = prevLayer;
     }
 
     public void Draw(SpriteBatch spriteBatch)
