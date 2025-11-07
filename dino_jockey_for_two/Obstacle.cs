@@ -30,6 +30,11 @@ public class Obstacle
         Collider.MoveCentered(Position);
     }
 
+    public void SetTint(Color tint)
+    {
+        _sprite.Tint = tint;
+    }
+
     public void Update(GameTime gameTime)
     {
         float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;

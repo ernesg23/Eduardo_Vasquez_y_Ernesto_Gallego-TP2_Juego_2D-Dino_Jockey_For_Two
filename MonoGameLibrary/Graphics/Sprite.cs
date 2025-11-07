@@ -6,7 +6,7 @@ namespace MonoGameLibrary.Graphics;
 public class Sprite
 {
     protected TextureRegion Region { get; set; }
-    private Color Color { get; set; } = Color.White;
+    public Color Tint { get; set; } = Color.White;
     private float Rotation { get; set; } = 0.0f;
     public Vector2 Scale { get; set; } = Vector2.One;
     public Vector2 Origin { get; set; } = Vector2.Zero;
@@ -25,6 +25,6 @@ public class Sprite
     }
     public void Draw(SpriteBatch spriteBatch, Vector2 position)
     {
-        Region.Draw(spriteBatch, position, Color, Rotation, Origin, Scale, Effects, LayerDepth);
+        Region.Draw(spriteBatch, position, Tint, Rotation, Origin, Scale, Effects, LayerDepth);
     }
 }

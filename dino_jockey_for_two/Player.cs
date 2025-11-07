@@ -182,16 +182,23 @@ public class Player
         // Preservar propiedades y reiniciar anim desde frame 0 creando un nuevo AnimatedSprite
         var prevScale = _sprite.Scale;
         var prevLayer = _sprite.LayerDepth;
+        var prevTint = _sprite.Tint;
 
         _sprite = new AnimatedSprite(anim);
         _sprite.CenterOrigin();
         _sprite.Scale = prevScale;
         _sprite.LayerDepth = prevLayer;
+        _sprite.Tint = prevTint;
     }
 
     public void Draw(SpriteBatch spriteBatch)
     {
         _sprite.Draw(spriteBatch, Position);
+    }
+
+    public void SetTint(Color tint)
+    {
+        _sprite.Tint = tint;
     }
 
     public GraphicsDevice GetGraphicsDevice()

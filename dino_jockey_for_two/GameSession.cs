@@ -10,6 +10,12 @@ namespace dino_jockey_for_two;
 
 public class GameSession
 {
+    // Factor de transición día/noche (0=día, 1=noche)
+    private float _nightFactor;
+
+    private float _nightTarget;
+    // Velocidad para lograr 0->1 en 2 segundos (0.5 por segundo)
+    private const float NightLerpRate = 0.5f;
     public bool RestartReady;
     public bool Restart;
     private double _startCountdown = -1;
@@ -29,6 +35,7 @@ public class GameSession
     private Texture2D _debugTexture;
     private bool _debugTextureInitialized;
     private Texture2D _obstacleTexture;
+    private List<Texture2D> _obstacleTextures;
     private float _currentObstacleSpeed;
     private readonly Random _random = new Random();
     private double _scoreAccumulator;
@@ -50,7 +57,7 @@ public class GameSession
         Name = name;
         _viewport = viewport;
         _floorSprite = floorSprite;
-        _floorSprite.LayerDepth = 0f;
+        _floorSprite.LayerDepth = 0.1f; // Piso por encima del fondo
         _floorSprite.Scale = Vector2.One;
         _floorSprite.Origin = new Vector2(0, _floorSprite.Height / 2);
 
@@ -65,6 +72,10 @@ public class GameSession
         _font = font;
 
         CreateObstacleTexture();
+
+        // Inicializar estado de día/noche según puntaje actual
+        _nightTarget = IsNightByScore() ? 1f : 0f;
+        _nightFactor = _nightTarget;
     }
 
     public void Reset()
@@ -79,6 +90,10 @@ public class GameSession
         _currentObstacleSpeed = GameConfig.ObstacleSpeed;
         _obstacles.Clear();
         Player.Reset();
+
+        // Reiniciar estado día/noche
+        _nightTarget = IsNightByScore() ? 1f : 0f;
+        _nightFactor = _nightTarget;
     }
     public void ResetSession()
     {
@@ -98,19 +113,57 @@ public class GameSession
         // Reposicionar piso
         _floorPosition1 = new Vector2(0, _floorY);
         _floorPosition2 = new Vector2(_floorSprite.Width, _floorY);
+
+        // Reiniciar transición día/noche
+        _nightTarget = IsNightByScore() ? 1f : 0f;
+        _nightFactor = _nightTarget;
     }
 
     private void CreateObstacleTexture()
     {
-        _obstacleTexture = new Texture2D(Player.GetGraphicsDevice(), 40, 60);
-        var data = new Color[40 * 60];
+        // Backward-compat placeholder: build multiple obstacle textures with different colors/sizes
+        _obstacleTextures = new List<Texture2D>();
+        CreateColoredObstacleTexture(30, 50, Color.ForestGreen);
+        CreateColoredObstacleTexture(40, 60, Color.OrangeRed);
+        CreateColoredObstacleTexture(50, 90, Color.MediumPurple);
+        CreateColoredObstacleTexture(35, 70, Color.CadetBlue);
+
+        // Keep legacy single texture as the first entry for any fallback
+        _obstacleTexture = _obstacleTextures[0];
+    }
+
+    private void CreateColoredObstacleTexture(int width, int height, Color color)
+    {
+        var tex = new Texture2D(Player.GetGraphicsDevice(), width, height);
+        var data = new Color[width * height];
         for (var i = 0; i < data.Length; i++)
-            data[i] = Color.Green;
-        _obstacleTexture.SetData(data);
+            data[i] = new Color(color.R, color.G, color.B, (byte)255); // asegurar opaco
+        tex.SetData(data);
+        _obstacleTextures.Add(tex);
+    }
+
+    private void UpdateNightTransition(GameTime gameTime)
+    {
+        // Determinar objetivo según el puntaje
+        _nightTarget = IsNightByScore() ? 1f : 0f;
+        // Avanzar suavemente hacia el objetivo en 2 segundos
+        float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
+        float step = NightLerpRate * dt;
+        if (_nightFactor < _nightTarget)
+        {
+            _nightFactor = MathHelper.Min(_nightFactor + step, _nightTarget);
+        }
+        else if (_nightFactor > _nightTarget)
+        {
+            _nightFactor = MathHelper.Max(_nightFactor - step, _nightTarget);
+        }
     }
 
     public void Update(GameTime gameTime, InputManager inputManager)
     {
+        // Actualizar transición día/noche suave
+        UpdateNightTransition(gameTime);
+
         // 1. Confirmación de "listo" para comenzar (solo antes del countdown)
         if (!IsReady && !CanStart && _startCountdown == -1 && !IsOver && !Winner)
         {
@@ -220,12 +273,32 @@ public class GameSession
         }
     }
 
+    private int GetObstacleStyleIndex()
+    {
+        if (_obstacleTextures == null || _obstacleTextures.Count == 0) return 0;
+        var idx = (Score / 150) % _obstacleTextures.Count; // cambia cada 150 puntos
+        if (idx < 0) idx = 0;
+        return idx;
+    }
+
+    private bool IsNightByScore()
+    {
+        // Cambia cada 100 puntos (100-199 noche, 200-299 día, etc.)
+        int segment = (Score / 100);
+        return (segment % 2) == 1;
+    }
+
     private void SpawnObstacle()
     {
-        float obstacleY = _floorY - _obstacleTexture.Height + GameConfig.ObstacleSpawnYOffset;
-        Vector2 startPosition = new Vector2(_viewport.Width, obstacleY);
+        // Seleccionar textura según puntaje actual
+        var selected = _obstacleTextures is { Count: > 0 }
+            ? _obstacleTextures[GetObstacleStyleIndex()]
+            : _obstacleTexture;
 
-        var obstacleRegion = new TextureRegion(_obstacleTexture, 0, 0, _obstacleTexture.Width, _obstacleTexture.Height);
+        float obstacleY = _floorY - selected.Height + GameConfig.ObstacleSpawnYOffset;
+        Vector2 startPosition = new Vector2(_viewport.X + _viewport.Width, obstacleY);
+
+        var obstacleRegion = new TextureRegion(selected, 0, 0, selected.Width, selected.Height);
         var obstacleSprite = new Sprite(obstacleRegion)
         {
             Scale = Vector2.One,
@@ -289,12 +362,11 @@ public class GameSession
     {
         if (!Player.IsDead && !Player.StartAnim)
         {
-            float relativeX = (Player.Position.X - _viewport.X) / _viewport.Width;
-
-            float scoreFactor = MathHelper.Lerp(0.5f, 1.5f, relativeX);
-
-            _scoreAccumulator += gameTime.ElapsedGameTime.TotalSeconds * 10 * scoreFactor;
-            Score = (int)_scoreAccumulator;
+            // Puntaje idéntico para ambos jugadores: tasa constante por segundo, independiente de la posición
+            _scoreAccumulator += gameTime.ElapsedGameTime.TotalSeconds * 10;
+            var newScore = (int)_scoreAccumulator;
+            if (newScore > Score)
+                Score = newScore;
         }
     }
 
@@ -314,14 +386,28 @@ public class GameSession
     {
         InitializeDebugTexture(spriteBatch.GraphicsDevice);
 
+        // Fondo y tintes con transición suave (2s)
+        float nightF = MathHelper.Clamp(_nightFactor, 0f, 1f);
+        Color bgColor = Color.Lerp(Color.White, Color.Black, nightF);
+        spriteBatch.Draw(_debugTexture, _viewport, bgColor);
+
+        Color worldTint = Color.Lerp(Color.White, new Color(220, 220, 220, 255), nightF);
+        Color uiColor = Color.Lerp(Color.Black, Color.White, nightF);
+
+        _floorSprite.Tint = worldTint;
+        Player.SetTint(worldTint);
+
         // Dibujar piso y jugador
         _floorSprite.Draw(spriteBatch, _floorPosition1);
         _floorSprite.Draw(spriteBatch, _floorPosition2);
         Player.Draw(spriteBatch);
 
-        // Dibujar obstáculos
+        // Dibujar obstáculos con tinte acorde
         foreach (var obstacle in _obstacles)
+        {
+            obstacle.SetTint(worldTint);
             obstacle.Draw(spriteBatch);
+        }
 
         // Debug: colliders
         if (_debugTexture != null)
@@ -357,7 +443,7 @@ public class GameSession
                 _viewport.Center.X - size.X / 2,
                 _viewport.Y + (_viewport.Height / 2) - size.Y / 2
             );
-            spriteBatch.DrawString(_font, message, pos, Color.Black);
+            spriteBatch.DrawString(_font, message, pos, uiColor, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.95f);
         }
 
         // -----------------------------
@@ -368,7 +454,12 @@ public class GameSession
             _font,
             scoreText,
             new Vector2(_viewport.X + 10 + _viewport.Width * 0.7f, _viewport.Y + 10),
-            Color.Black
+            uiColor,
+            0f,
+            Vector2.Zero,
+            1f,
+            SpriteEffects.None,
+            0.95f
         );
     }
     private void InitializeDebugTexture(GraphicsDevice graphicsDevice)
@@ -384,9 +475,15 @@ public class GameSession
     public void UnloadContent()
     {
         _debugTexture?.Dispose();
-        _obstacleTexture?.Dispose();
         _debugTexture = null;
-        _obstacleTexture = null;
         _debugTextureInitialized = false;
+
+        if (_obstacleTextures != null)
+        {
+            foreach (var tex in _obstacleTextures)
+                tex?.Dispose();
+            _obstacleTextures.Clear();
+        }
+        _obstacleTexture = null;
     }
 }
