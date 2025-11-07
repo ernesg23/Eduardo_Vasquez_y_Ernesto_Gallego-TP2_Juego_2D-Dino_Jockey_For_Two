@@ -1,5 +1,7 @@
 using Microsoft.Xna.Framework.Input;
 
+namespace dino_jockey_for_two;
+
 public static class GameConfig
 {
     public const int ScreenWidth = 1280;

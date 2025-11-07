@@ -1,21 +1,17 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using MonoGameLibrary;
 using MonoGameLibrary.Graphics;
 using MonoGameLibrary.Input;
 
 namespace dino_jockey_for_two
 {
-    public class Game1 : Core
+    public class Game1() : Core("Dino Jockey", GameConfig.ScreenWidth, GameConfig.ScreenHeight, GameConfig.FullScreen)
     {
         private GameSession _game1;
         private GameSession _game2;
-        private InputManager _inputManager = new InputManager();
+        private readonly InputManager _inputManager = new InputManager();
         private SpriteFont _font;
-
-        public Game1() : base("Dino Jockey", GameConfig.ScreenWidth, GameConfig.ScreenHeight, GameConfig.FullScreen) { }
 
         protected override void LoadContent()
         {
@@ -23,7 +19,7 @@ namespace dino_jockey_for_two
 
             var floor = TextureAtlas.FromFile(Content, "images/floor-definition.xml");
             var dinoAtlas = TextureAtlas.FromFile(Content, "images/atlas-definition.xml");
-            int halfHeight = Window.ClientBounds.Height / 2;
+            var halfHeight = Window.ClientBounds.Height / 2;
 
             _game1 = new GameSession(
                 viewport: new Rectangle(0, 0, Window.ClientBounds.Width, halfHeight),
@@ -48,7 +44,7 @@ namespace dino_jockey_for_two
         {
             _inputManager.Keyboard.Update();
 
-            bool ended = _game1.IsOver || _game2.IsOver;
+            var ended = _game1.IsOver || _game2.IsOver;
 
             if (!ended)
             {
@@ -94,9 +90,8 @@ namespace dino_jockey_for_two
             _game1.Draw(SpriteBatch);
             _game2.Draw(SpriteBatch);
 
-            // Mensaje de victoria
             string victoryMessage = null;
-            Rectangle targetViewport = Rectangle.Empty;
+            var targetViewport = Rectangle.Empty;
 
             if (_game1.Winner)
             {
@@ -111,8 +106,8 @@ namespace dino_jockey_for_two
 
             if (victoryMessage != null)
             {
-                Vector2 size = _font.MeasureString(victoryMessage);
-                Vector2 pos = new Vector2(
+                var size = _font.MeasureString(victoryMessage);
+                var pos = new Vector2(
                     targetViewport.Center.X - size.X / 2,
                     targetViewport.Center.Y - size.Y / 2 - 40
                 );

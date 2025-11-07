@@ -5,16 +5,16 @@ namespace MonoGameLibrary.Graphics;
 
 public class Sprite
 {
-    public TextureRegion Region { get; set; }
-    public Color Color { get; set; } = Color.White;
-    public float Rotation { get; set; } = 0.0f;
+    protected TextureRegion Region { get; set; }
+    private Color Color { get; set; } = Color.White;
+    private float Rotation { get; set; } = 0.0f;
     public Vector2 Scale { get; set; } = Vector2.One;
     public Vector2 Origin { get; set; } = Vector2.Zero;
-    public SpriteEffects Effects { get; set; } = SpriteEffects.None;
-    public float LayerDepth { get; set; } = 0.0f;
+    private SpriteEffects Effects { get; set; } = SpriteEffects.None;
+    public float LayerDepth { get; set; }
     public float Width => Region.Width * Scale.X;
     public float Height => Region.Height * Scale.Y;
-    public Sprite() { }
+    protected Sprite() { }
     public Sprite(TextureRegion region)
     {
         Region = region;

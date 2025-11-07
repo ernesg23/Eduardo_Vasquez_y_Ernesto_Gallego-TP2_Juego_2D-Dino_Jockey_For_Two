@@ -6,6 +6,8 @@ using Microsoft.Xna.Framework.Input;
 using MonoGameLibrary.Graphics;
 using MonoGameLibrary.Input;
 
+namespace dino_jockey_for_two;
+
 public class GameSession
 {
     public bool RestartReady;
@@ -16,22 +18,22 @@ public class GameSession
     public bool Winner;
     public bool IsOver => Player.IsDead;
     private Rectangle _viewport;
-    private Sprite _floorSprite;
-    private float _floorY;
+    private readonly Sprite _floorSprite;
+    private readonly float _floorY;
     private Vector2 _floorPosition1;
     private Vector2 _floorPosition2;
-    public string Name;
-    public int Score = 0;
-    public Player Player;
-    private List<Obstacle> _obstacles;
+    public readonly string Name;
+    private int Score;
+    public readonly Player Player;
+    private readonly List<Obstacle> _obstacles;
     private Texture2D _debugTexture;
     private bool _debugTextureInitialized;
     private Texture2D _obstacleTexture;
     private float _currentObstacleSpeed;
-    private Random _random = new Random();
-    private double _scoreAccumulator = 0;
+    private readonly Random _random = new Random();
+    private double _scoreAccumulator;
     private double _spawnDelayTimer = -1;
-    private SpriteFont _font;
+    private readonly SpriteFont _font;
 
     public GameSession(
         Rectangle viewport,
@@ -101,8 +103,8 @@ public class GameSession
     private void CreateObstacleTexture()
     {
         _obstacleTexture = new Texture2D(Player.GetGraphicsDevice(), 40, 60);
-        Color[] data = new Color[40 * 60];
-        for (int i = 0; i < data.Length; i++)
+        var data = new Color[40 * 60];
+        for (var i = 0; i < data.Length; i++)
             data[i] = Color.Green;
         _obstacleTexture.SetData(data);
     }
@@ -201,7 +203,7 @@ public class GameSession
             return;
         }
 
-        var last = _obstacles[_obstacles.Count - 1];
+        var last = _obstacles[^1];
 
         if (_spawnDelayTimer < 0 && last.Position.X < _viewport.Width)
             _spawnDelayTimer = 0.5 + _random.NextDouble() * 1.5;
@@ -224,9 +226,11 @@ public class GameSession
         Vector2 startPosition = new Vector2(_viewport.Width, obstacleY);
 
         var obstacleRegion = new TextureRegion(_obstacleTexture, 0, 0, _obstacleTexture.Width, _obstacleTexture.Height);
-        var obstacleSprite = new Sprite(obstacleRegion);
-        obstacleSprite.Scale = Vector2.One;
-        obstacleSprite.LayerDepth = 0.5f;
+        var obstacleSprite = new Sprite(obstacleRegion)
+        {
+            Scale = Vector2.One,
+            LayerDepth = 0.5f
+        };
 
         Obstacle obstacle = new Obstacle(
             obstacleSprite,
@@ -285,7 +289,7 @@ public class GameSession
     {
         if (!Player.IsDead && !Player.StartAnim)
         {
-            float relativeX = (Player.Position.X - _viewport.X) / (float)_viewport.Width;
+            float relativeX = (Player.Position.X - _viewport.X) / _viewport.Width;
 
             float scoreFactor = MathHelper.Lerp(0.5f, 1.5f, relativeX);
 
@@ -372,7 +376,7 @@ public class GameSession
         if (!_debugTextureInitialized)
         {
             _debugTexture = new Texture2D(graphicsDevice, 1, 1);
-            _debugTexture.SetData(new[] { Color.White });
+            _debugTexture.SetData([Color.White]);
             _debugTextureInitialized = true;
         }
     }

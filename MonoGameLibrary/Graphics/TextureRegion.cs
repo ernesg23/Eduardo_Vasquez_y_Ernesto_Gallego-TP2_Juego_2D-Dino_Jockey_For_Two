@@ -11,12 +11,12 @@ public class TextureRegion
     /// <summary>
     /// Gets or Sets the source texture this texture region is part of.
     /// </summary>
-    public Texture2D Texture { get; set; }
+    private Texture2D Texture { get; set; }
 
     /// <summary>
     /// Gets or Sets the source rectangle boundary of this texture region within the source texture.
     /// </summary>
-    public Rectangle SourceRectangle { get; set; }
+    private Rectangle SourceRectangle { get; set; }
 
     /// <summary>
     /// Gets the width, in pixels, of this texture region.

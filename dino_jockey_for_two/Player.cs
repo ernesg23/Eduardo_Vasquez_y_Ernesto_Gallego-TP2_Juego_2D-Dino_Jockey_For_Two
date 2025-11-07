@@ -1,27 +1,29 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using MonoGameLibrary.Graphics;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGameLibrary.Input;
+using Microsoft.Xna.Framework.Input;
 using MonoGameLibrary.Collider;
+using MonoGameLibrary.Graphics;
+using MonoGameLibrary.Input;
+
+namespace dino_jockey_for_two;
 
 public class Player
 {
-    public Keys JumpKey;
+    public readonly Keys JumpKey;
     private bool _isJumping;
     private double _jumpTime;
     public Vector2 Position;
     public Vector2 Velocity;
-    public Box Collider;
+    public readonly Box Collider;
 
     private AnimatedSprite _sprite;
-    private Dictionary<string, Animation> _animations;
-    private float _floorY;
-    private GraphicsDevice _graphicsDevice;
+    private readonly Dictionary<string, Animation> _animations;
+    private readonly float _floorY;
+    private readonly GraphicsDevice _graphicsDevice;
 
     public bool IsDead { get; private set; }
-    public bool InFloor { get; private set; }
+    private bool InFloor { get; set; }
     public bool StartAnim { get; set; }
 
     public Player(TextureAtlas dinoAtlas, float floorY, Keys jumpKey)
