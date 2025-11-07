@@ -4,15 +4,9 @@ namespace MonoGameLibrary.Input;
 
 public class KeyboardInfo
 {
-    public KeyboardState PreviousState { get; private set; }
+    private KeyboardState PreviousState { get; set; }
 
-    public KeyboardState CurrentState { get; private set; }
-
-    public KeyboardInfo()
-    {
-        PreviousState = new KeyboardState();
-        CurrentState = Keyboard.GetState();
-    }
+    private KeyboardState CurrentState { get; set; } = Keyboard.GetState();
 
     public void Update()
     {

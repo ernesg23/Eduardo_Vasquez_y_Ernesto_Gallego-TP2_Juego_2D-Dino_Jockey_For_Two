@@ -12,12 +12,12 @@ public class InputManager
     /// <summary>
     /// Gets the state information of mouse input.
     /// </summary>
-    public MouseInfo Mouse { get; private set; }
+    private MouseInfo Mouse { get; set; }
 
     /// <summary>
     /// Gets the state information of a gamepad.
     /// </summary>
-    public GamePadInfo[] GamePads { get; private set; }
+    private GamePadInfo[] GamePads { get; set; }
 
     /// <summary>
     /// Creates a new InputManager.

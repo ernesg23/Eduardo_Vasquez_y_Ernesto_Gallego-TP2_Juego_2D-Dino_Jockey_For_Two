@@ -273,23 +273,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\espar\\.nuget\\packages\\": {},
+    "C:\\Users\\ernes\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\espar\\OneDrive\\Escritorio\\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two\\MonoGameLibrary\\MonoGameLibrary.csproj",
+      "projectUniqueName": "C:\\Users\\ernes\\OneDrive\\Documentos\\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two\\MonoGameLibrary\\MonoGameLibrary.csproj",
       "projectName": "MonoGameLibrary",
-      "projectPath": "C:\\Users\\espar\\OneDrive\\Escritorio\\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two\\MonoGameLibrary\\MonoGameLibrary.csproj",
-      "packagesPath": "C:\\Users\\espar\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\espar\\OneDrive\\Escritorio\\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two\\MonoGameLibrary\\obj\\",
+      "projectPath": "C:\\Users\\ernes\\OneDrive\\Documentos\\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two\\MonoGameLibrary\\MonoGameLibrary.csproj",
+      "packagesPath": "C:\\Users\\ernes\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\ernes\\OneDrive\\Documentos\\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two\\MonoGameLibrary\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\espar\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\ernes\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -298,6 +298,7 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -344,7 +345,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

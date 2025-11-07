@@ -3,12 +3,14 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGameLibrary.Collider;
 using MonoGameLibrary.Graphics;
 
+namespace dino_jockey_for_two;
+
 public class Obstacle
 {
     public Vector2 Position { get; private set; }
     public Box Collider { get; private set; }
-    private Sprite _sprite;
-    private float _speed;
+    private readonly Sprite _sprite;
+    private readonly float _speed;
     private float _viewportWidth;
 
     public bool ShouldRemove => Position.X < -_sprite.Width;

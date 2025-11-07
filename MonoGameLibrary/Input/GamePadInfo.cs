@@ -11,17 +11,17 @@ public class GamePadInfo
     /// <summary>
     /// Gets the index of the player this gamepad is for.
     /// </summary>
-    public PlayerIndex PlayerIndex { get; }
+    private PlayerIndex PlayerIndex { get; }
 
     /// <summary>
     /// Gets the state of input for this gamepad during the previous update cycle.
     /// </summary>
-    public GamePadState PreviousState { get; private set; }
+    private GamePadState PreviousState { get; set; }
 
     /// <summary>
     /// Gets the state of input for this gamepad during the current update cycle.
     /// </summary>
-    public GamePadState CurrentState { get; private set; }
+    private GamePadState CurrentState { get; set; }
 
     /// <summary>
     /// Gets a value that indicates if this gamepad is currently connected.
@@ -128,7 +128,7 @@ public class GamePadInfo
     /// <summary>
     /// Stops the vibration of all motors for this gamepad.
     /// </summary>
-    public void StopVibration()
+    private void StopVibration()
     {
         GamePad.SetVibration(PlayerIndex, 0.0f, 0.0f);
     }

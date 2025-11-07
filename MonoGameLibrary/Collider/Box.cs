@@ -1,16 +1,9 @@
-using System;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 namespace MonoGameLibrary.Collider;
 
-public class Box
+public class Box(Vector2 position, int width, int height)
 {
-    public Rectangle Bounds;
-
-    public Box(Vector2 position, int width, int height)
-    {
-        this.Bounds = new Rectangle((int)position.X, (int)position.Y, width, height);
-    }
+    public Rectangle Bounds = new((int)position.X, (int)position.Y, width, height);
 
     public void MoveCentered(Vector2 position)
     {
