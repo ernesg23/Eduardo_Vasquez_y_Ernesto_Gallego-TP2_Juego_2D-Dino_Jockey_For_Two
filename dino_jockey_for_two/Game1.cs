@@ -6,7 +6,7 @@ using MonoGameLibrary.Input;
 
 namespace dino_jockey_for_two
 {
-    public class Game1() : Core("Dino Jockey", GameConfig.ScreenWidth, GameConfig.ScreenHeight, GameConfig.FullScreen)
+    public class Game1 : Core
     {
         private enum AppState { Menu, Playing }
         private AppState _state = AppState.Menu;
@@ -17,42 +17,55 @@ namespace dino_jockey_for_two
         private SpriteFont _font;
         private MenuScreen _menu;
         private Point _lastWindowSize;
+        private TextureAtlas _floorAtlas;
+        private TextureAtlas _dinoAtlas;
+
+        public Game1()
+            : base("Dino Jockey", GameConfig.ScreenWidth, GameConfig.ScreenHeight, GameConfig.FullScreen)
+        {
+        }
 
         protected override void LoadContent()
         {
             _font = Content.Load<SpriteFont>("fonts/DinoFont");
-            _menu = new MenuScreen(GraphicsDevice, _font);
+
+            var pixel = new Texture2D(GraphicsDevice, 1, 1);
+            pixel.SetData(new[] { Color.White });
+
+            _menu = new MenuScreen(_font, pixel);
             _lastWindowSize = new Point(Window.ClientBounds.Width, Window.ClientBounds.Height);
             _menu.Resize(_lastWindowSize);
             _menu.StartRequested += OnStartRequested;
+
+            // Carga atlases aquí, así sólo se usa una vez
+            _floorAtlas = TextureAtlas.FromFile(Content, "images/floor-definition.xml");
+            _dinoAtlas = TextureAtlas.FromFile(Content, "images/atlas-definition.xml");
         }
 
         private void OnStartRequested()
         {
-            // Load gameplay content lazily on start
-            var floor = TextureAtlas.FromFile(Content, "images/floor-definition.xml");
-            var dinoAtlas = TextureAtlas.FromFile(Content, "images/atlas-definition.xml");
             var halfHeight = Window.ClientBounds.Height / 2;
 
             _game1 = new GameSession(
-                viewport: new Rectangle(0, 0, Window.ClientBounds.Width, halfHeight),
-                floorSprite: floor.CreateSprite("floor"),
-                dinoAtlas: dinoAtlas,
-                jumpKey: GameConfig.Player1JumpKey,
-                name: "Player 1",
-                font: _font
+                new Rectangle(0, 0, Window.ClientBounds.Width, halfHeight),
+                _floorAtlas.CreateSprite("floor"),
+                _dinoAtlas,
+                GameConfig.Player1JumpKey,
+                "Player 1",
+                _font
             );
 
             _game2 = new GameSession(
-                viewport: new Rectangle(0, halfHeight, Window.ClientBounds.Width, halfHeight),
-                floorSprite: floor.CreateSprite("floor"),
-                dinoAtlas: dinoAtlas,
-                jumpKey: GameConfig.Player2JumpKey,
-                name: "Player 2",
-                font: _font
+                new Rectangle(0, halfHeight, Window.ClientBounds.Width, halfHeight),
+                _floorAtlas.CreateSprite("floor"),
+                _dinoAtlas,
+                GameConfig.Player2JumpKey,
+                "Player 2",
+                _font
             );
-
             _state = AppState.Playing;
+
+            // Libera menú de memoria si no lo vas a usar
             _menu?.Dispose();
             _menu = null;
         }
@@ -61,14 +74,12 @@ namespace dino_jockey_for_two
         {
             if (_state == AppState.Menu)
             {
-                // Handle resize
                 var sizeNow = new Point(Window.ClientBounds.Width, Window.ClientBounds.Height);
                 if (sizeNow != _lastWindowSize)
                 {
                     _lastWindowSize = sizeNow;
                     _menu?.Resize(sizeNow);
                 }
-
                 _menu?.Update(gameTime);
             }
             else // Playing
@@ -111,9 +122,9 @@ namespace dino_jockey_for_two
                     _game2.Player.UpdateAnimationOnly(gameTime);
                 }
             }
-
             base.Update(gameTime);
         }
+
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.White);
@@ -153,10 +164,8 @@ namespace dino_jockey_for_two
                     SpriteBatch.DrawString(_font, victoryMessage, pos, Color.Black);
                 }
             }
-
             SpriteBatch.End();
             base.Draw(gameTime);
         }
-
     }
 }

@@ -9,26 +9,23 @@ namespace dino_jockey_for_two
     {
         public event Action StartRequested;
 
-        private readonly GraphicsDevice _graphicsDevice;
         private readonly SpriteFont _font;
+        private readonly Texture2D _pixel;
 
-        private Texture2D _pixel;
         private MouseState _prevMouse;
         private MouseState _currMouse;
         private KeyboardState _prevKeyboard;
         private KeyboardState _currKeyboard;
 
-        // Layout
         private Rectangle _buttonRect;
         private string _title = "Dino Jockey";
         private string _subtitle = "For Two";
         private string _buttonText = "Iniciar";
 
-        // Visuals
-        private Color _bgTop = new Color(230, 246, 255);   // pastel cielo
+        private Color _bgTop = new Color(230, 246, 255);
         private Color _bgBottom = new Color(200, 232, 255);
         private Color _cloud = new Color(255, 255, 255, 140);
-        private Color _buttonIdle = new Color(255, 170, 200); // rosa pastel
+        private Color _buttonIdle = new Color(255, 170, 200);
         private Color _buttonHover = new Color(255, 140, 185);
         private Color _buttonPress = new Color(245, 110, 165);
         private Color _buttonTextColor = Color.White;
@@ -38,12 +35,10 @@ namespace dino_jockey_for_two
         private bool _isHover;
         private bool _isPress;
 
-        public MenuScreen(GraphicsDevice graphicsDevice, SpriteFont font)
+        public MenuScreen(SpriteFont font, Texture2D pixel)
         {
-            _graphicsDevice = graphicsDevice;
             _font = font;
-            _pixel = new Texture2D(graphicsDevice, 1, 1);
-            _pixel.SetData(new[] { Color.White });
+            _pixel = pixel;
             _prevMouse = _currMouse = Mouse.GetState();
             _prevKeyboard = _currKeyboard = Keyboard.GetState();
         }
@@ -65,7 +60,7 @@ namespace dino_jockey_for_two
 
         public void Update(GameTime gameTime)
         {
-            // Update input states
+            // Actualiza estados
             _prevMouse = _currMouse;
             _currMouse = Mouse.GetState();
             _prevKeyboard = _currKeyboard;
@@ -74,34 +69,25 @@ namespace dino_jockey_for_two
             var mousePoint = new Point(_currMouse.X, _currMouse.Y);
             _isHover = _buttonRect.Contains(mousePoint);
 
-            bool clicked = false;
+            bool mouseClicked = false;
             if (_isHover)
             {
-                if (_currMouse.LeftButton == ButtonState.Pressed)
+                // Detecta click real, solo si el botón acaba de ser soltado dentro del botón
+                if (_prevMouse.LeftButton == ButtonState.Pressed && _currMouse.LeftButton == ButtonState.Released)
                 {
-                    _isPress = true;
-                }
-                else
-                {
-                    if (_isPress && _prevMouse.LeftButton == ButtonState.Pressed && _currMouse.LeftButton == ButtonState.Released)
-                        clicked = true;
-                    _isPress = false;
+                    mouseClicked = true;
                 }
             }
-            else
-            {
-                _isPress = false;
-            }
 
-            bool enterPressed = _currKeyboard.IsKeyDown(Keys.Enter) && !_prevKeyboard.IsKeyDown(Keys.Enter);
-            bool spacePressed = _currKeyboard.IsKeyDown(Keys.Space) && !_prevKeyboard.IsKeyDown(Keys.Space);
-            if (enterPressed || spacePressed)
-            {
-                clicked = true;
-            }
+            bool keyPressed =
+                (_currKeyboard.IsKeyDown(Keys.Enter) && !_prevKeyboard.IsKeyDown(Keys.Enter)) ||
+                (_currKeyboard.IsKeyDown(Keys.Space) && !_prevKeyboard.IsKeyDown(Keys.Space)) ||
+                (_currKeyboard.IsKeyDown(Keys.Up) && !_prevKeyboard.IsKeyDown(Keys.Up));
 
-            if (clicked)
+            if (mouseClicked || keyPressed)
+            {
                 StartRequested?.Invoke();
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch, Rectangle viewport)
@@ -113,17 +99,20 @@ namespace dino_jockey_for_two
 
         private void DrawBackground(SpriteBatch spriteBatch, Rectangle viewport)
         {
-            // Simple vertical gradient using 20 bands
             int bands = 20;
             for (int i = 0; i < bands; i++)
             {
                 float t = i / (float)(bands - 1);
                 var color = Color.Lerp(_bgTop, _bgBottom, t);
-                var rect = new Rectangle(viewport.X, viewport.Y + (int)(viewport.Height * t / bands * bands), viewport.Width, viewport.Height / bands + 2);
+                var rect = new Rectangle(
+                    viewport.X,
+                    viewport.Y + (int)(viewport.Height * i / (float)bands),
+                    viewport.Width,
+                    viewport.Height / bands + 2
+                );
                 spriteBatch.Draw(_pixel, rect, null, color, 0f, Vector2.Zero, SpriteEffects.None, 0.1f);
             }
 
-            // Cute clouds
             DrawCloud(spriteBatch, new Vector2(viewport.Width * 0.18f, viewport.Height * 0.22f), 80);
             DrawCloud(spriteBatch, new Vector2(viewport.Width * 0.72f, viewport.Height * 0.28f), 110);
             DrawCloud(spriteBatch, new Vector2(viewport.Width * 0.50f, viewport.Height * 0.18f), 70);
@@ -131,7 +120,6 @@ namespace dino_jockey_for_two
 
         private void DrawCloud(SpriteBatch spriteBatch, Vector2 center, float size)
         {
-            // Draw three overlapping circles approximated by rectangles (soft look)
             float z = 0.2f;
             var c = _cloud;
             spriteBatch.Draw(_pixel, new Rectangle((int)(center.X - size), (int)(center.Y - size * 0.25f), (int)(size * 1.1f), (int)(size * 0.5f)), null, c, 0f, Vector2.Zero, SpriteEffects.None, z);
@@ -150,7 +138,6 @@ namespace dino_jockey_for_two
             var titlePos = new Vector2(viewport.Center.X - titleSize.X / 2, viewport.Height * 0.22f - titleSize.Y / 2);
             var subtitlePos = new Vector2(viewport.Center.X - subtitleSize.X / 2, viewport.Height * 0.32f - subtitleSize.Y / 2);
 
-            // Cute drop shadow
             var shadowOffset = new Vector2(3, 3);
             spriteBatch.DrawString(_font, _title, titlePos + shadowOffset, Color.White * 0.7f, 0f, Vector2.Zero, titleScale, SpriteEffects.None, 0.5f);
             spriteBatch.DrawString(_font, _title, titlePos, _titleColor, 0f, Vector2.Zero, titleScale, SpriteEffects.None, 0.6f);
@@ -165,11 +152,9 @@ namespace dino_jockey_for_two
             if (_isPress) color = _buttonPress;
             else if (_isHover) color = _buttonHover;
 
-            // Rounded look by layering rectangles
             int radius = Math.Min(_buttonRect.Height, _buttonRect.Width) / 6;
             DrawRoundedRect(spriteBatch, _buttonRect, radius, color, 0.8f);
 
-            // Text centered
             var textSize = _font.MeasureString(_buttonText);
             var textPos = new Vector2(
                 _buttonRect.X + _buttonRect.Width / 2f - textSize.X / 2f,
@@ -181,12 +166,11 @@ namespace dino_jockey_for_two
 
         private void DrawRoundedRect(SpriteBatch spriteBatch, Rectangle rect, int radius, Color color, float depth)
         {
-            // Core rectangle
             spriteBatch.Draw(_pixel, new Rectangle(rect.X + radius, rect.Y, rect.Width - 2 * radius, rect.Height), null, color, 0f, Vector2.Zero, SpriteEffects.None, depth);
-            // Left & right
             spriteBatch.Draw(_pixel, new Rectangle(rect.X, rect.Y + radius, radius, rect.Height - 2 * radius), null, color, 0f, Vector2.Zero, SpriteEffects.None, depth);
             spriteBatch.Draw(_pixel, new Rectangle(rect.Right - radius, rect.Y + radius, radius, rect.Height - 2 * radius), null, color, 0f, Vector2.Zero, SpriteEffects.None, depth);
-            // Corners approximated as squares (simple cute look)
+            spriteBatch.Draw(_pixel, new Rectangle(rect.X + radius, rect.Y, rect.Width - 2 * radius, radius), null, color, 0f, Vector2.Zero, SpriteEffects.None, depth);
+            spriteBatch.Draw(_pixel, new Rectangle(rect.X + radius, rect.Bottom - radius, rect.Width - 2 * radius, radius), null, color, 0f, Vector2.Zero, SpriteEffects.None, depth);
             spriteBatch.Draw(_pixel, new Rectangle(rect.X, rect.Y, radius, radius), null, color, 0f, Vector2.Zero, SpriteEffects.None, depth);
             spriteBatch.Draw(_pixel, new Rectangle(rect.Right - radius, rect.Y, radius, radius), null, color, 0f, Vector2.Zero, SpriteEffects.None, depth);
             spriteBatch.Draw(_pixel, new Rectangle(rect.X, rect.Bottom - radius, radius, radius), null, color, 0f, Vector2.Zero, SpriteEffects.None, depth);
@@ -196,7 +180,6 @@ namespace dino_jockey_for_two
         public void Dispose()
         {
             _pixel?.Dispose();
-            _pixel = null;
         }
     }
 }
