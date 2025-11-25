@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas>
+	<Texture>images/full_atlas</Texture>
+	<Regions>
+		<Region name="dino_walk_1" x="0" y="0" width="51" height="67" />
+		<Region name="dino_walk_2" x="54" y="0" width="51" height="67" />
+		<Region name="dino_jump" x="116" y="0" width="59" height="71" />
+		<Region name="dino_dead" x="176" y="2" width="50" height="61" />
+		<Region name="bullet_air" x="332" y="0" width="42" height="54"/>
+		<Region name="bullet_floor" x="378" y="0" width="44" height="48"/>
+		<Region name="speedy" x="424" y="0" width="60" height="38"/>
+		<Region name="wave" x="497" y="0" width="98" height="74"/>
+		<Region name="warning" x="603" y="0" width="46" height="70"/>
+		<Region name="cloud" x="652" y="0" width="92" height="29"/>
+		<Region name="flying_1" x="0" y="107" width="92" height="68"/>
+		<Region name="flying_2" x="96" y="95" width="92" height="60"/>
+		<Region name="cactus_1" x="193" y="107" width="34" height="70"/>
+	</Regions>
+	<Animations>
+		<Animation name="dino_walk" delay="100">
+			<Frame region="dino_walk_1" />
+			<Frame region="dino_walk_2" />
+		</Animation>
+		<Animation name="dino_jump" delay="100">
+			<Frame region="dino_jump" />
+		</Animation>
+		<Animation name="dino_dead" delay="100">
+			<Frame region="dino_dead" />
+		</Animation>
+		<Animation name="flying_dino" delay="100">
+			<Frame region="flying_1"/>
+			<Frame region="flying_2"/>
+		</Animation>
+		<Animation name="cactus_1" delay="100">
+			<Frame region="cactus_1"/>
+		</Animation>
+	</Animations>
+</TextureAtlas>

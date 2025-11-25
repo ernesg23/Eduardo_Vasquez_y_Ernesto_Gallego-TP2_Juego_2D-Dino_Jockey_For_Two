@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas>
+	<Texture>images/jockey_atlas</Texture>
+	<Regions>
+		<Region name="dino_walk_1" x="0" y="0" width="64" height="73" />
+		<Region name="dino_walk_2" x="64" y="0" width="64" height="73" />
+		<Region name="dino_jump" x="124" y="0" width="64" height="73" />
+		<Region name="dino_dead" x="188" y="0" width="64" height="73" />
+	</Regions>
+	<Animations>
+		<Animation name="dino_walk" delay="100">
+			<Frame region="dino_walk_1" />
+			<Frame region="dino_walk_2" />
+		</Animation>
+		<Animation name="dino_jump" delay="100">
+			<Frame region="dino_jump" />
+		</Animation>
+		<Animation name="dino_dead" delay="100">
+			<Frame region="dino_dead" />
+		</Animation>
+	</Animations>
+</TextureAtlas>

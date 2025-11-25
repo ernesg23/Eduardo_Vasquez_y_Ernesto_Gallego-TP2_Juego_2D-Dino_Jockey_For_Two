@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SourceFileCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Profile>Reach</Profile>
+  <Platform>DesktopGL</Platform>
+  <Config />
+  <SourceFiles>
+    <File>C:/Users/espar/OneDrive/Escritorio/Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two/DinoJockey/DinoJockey/Content/audio/jump.wav</File>
+    <File>C:/Users/espar/OneDrive/Escritorio/Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two/DinoJockey/DinoJockey/Content/audio/menuMusic.mp3</File>
+    <File>C:/Users/espar/OneDrive/Escritorio/Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two/DinoJockey/DinoJockey/Content/audio/music.mp3</File>
+    <File>C:/Users/espar/OneDrive/Escritorio/Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two/DinoJockey/DinoJockey/Content/audio/push.wav</File>
+    <File>C:/Users/espar/OneDrive/Escritorio/Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two/DinoJockey/DinoJockey/Content/effects/ColorReplace.fx</File>
+    <File>C:/Users/espar/OneDrive/Escritorio/Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two/DinoJockey/DinoJockey/Content/fonts/mainFont.spritefont</File>
+    <File>C:/Users/espar/OneDrive/Escritorio/Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two/DinoJockey/DinoJockey/Content/fonts/titleFont.spritefont</File>
+    <File>C:/Users/espar/OneDrive/Escritorio/Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two/DinoJockey/DinoJockey/Content/images/background-pattern-black.png</File>
+    <File>C:/Users/espar/OneDrive/Escritorio/Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two/DinoJockey/DinoJockey/Content/images/background-pattern.png</File>
+    <File>C:/Users/espar/OneDrive/Escritorio/Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two/DinoJockey/DinoJockey/Content/images/floor-pattern.png</File>
+    <File>C:/Users/espar/OneDrive/Escritorio/Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two/DinoJockey/DinoJockey/Content/images/full_atlas.png</File>
+  </SourceFiles>
+  <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+  </DestFiles>
+</SourceFileCollection>

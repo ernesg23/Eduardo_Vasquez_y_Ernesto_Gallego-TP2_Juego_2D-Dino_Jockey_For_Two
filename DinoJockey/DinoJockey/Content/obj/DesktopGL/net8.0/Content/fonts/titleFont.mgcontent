@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/espar/OneDrive/Escritorio/Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two/DinoJockey/DinoJockey/Content/fonts/titleFont.spritefont</SourceFile>
+  <SourceTime>2025-11-17T10:21:04.8743969-03:00</SourceTime>
+  <DestFile>C:/Users/espar/OneDrive/Escritorio/Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two/DinoJockey/DinoJockey/Content/bin/DesktopGL/Content/fonts/titleFont.xnb</DestFile>
+  <DestTime>2025-11-25T19:57:20.5506372-03:00</DestTime>
+  <Importer>FontDescriptionImporter</Importer>
+  <ImporterTime>2025-06-02T07:31:02-03:00</ImporterTime>
+  <Processor>FontDescriptionProcessor</Processor>
+  <ProcessorTime>2025-06-02T07:31:02-03:00</ProcessorTime>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Compressed</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
