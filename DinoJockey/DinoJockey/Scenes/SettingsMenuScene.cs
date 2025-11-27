@@ -215,7 +215,7 @@ public class SettingsMenuScene : Scene
         int y = 120;
 
         // Música
-        sb.DrawString(_font, $"Música: {(int)(GameSettings.MusicVolume*100)}%", new Vector2(centerX - 120, y + 60), Color.White);
+        sb.DrawString(_font, $"Musica: {(int)(GameSettings.MusicVolume*100)}%", new Vector2(centerX - 120, y + 60), Color.White);
         DrawButton(_btnMusicMinus, "-");
         DrawButton(_btnMusicPlus, "+");
 
@@ -226,7 +226,7 @@ public class SettingsMenuScene : Scene
 
         // Resolución
         var res = _resolutions[_resIndex];
-        sb.DrawString(_font, $"Resolución: {res.X}x{res.Y}", new Vector2(centerX - 120, y + 260), Color.White);
+        sb.DrawString(_font, $"Resolucion: {res.X}x{res.Y}", new Vector2(centerX - 120, y + 260), Color.White);
         DrawButton(_btnResPrev, "<");
         DrawButton(_btnResNext, ">");
 
@@ -237,12 +237,12 @@ public class SettingsMenuScene : Scene
         sb.DrawString(_font, $"P1 Tecla: {GameSettings.Player1.KeyboardKey}", new Vector2(centerX - 300, y + 390), Color.White);
         DrawButton(_btnP1Key, _rebindState == RebindState.P1Key ? "Presione una tecla..." : "Cambiar Tecla P1");
         sb.DrawString(_font, $"P1 Gamepad: {GameSettings.Player1.GamePadButton}", new Vector2(centerX + 80, y + 390), Color.White);
-        DrawButton(_btnP1Pad, _rebindState == RebindState.P1Pad ? "Presione un botón..." : "Cambiar Botón P1");
+        DrawButton(_btnP1Pad, _rebindState == RebindState.P1Pad ? "Presione un boton..." : "Cambiar Boton P1");
 
         sb.DrawString(_font, $"P2 Tecla: {GameSettings.Player2.KeyboardKey}", new Vector2(centerX - 300, y + 470), Color.White);
         DrawButton(_btnP2Key, _rebindState == RebindState.P2Key ? "Presione una tecla..." : "Cambiar Tecla P2");
         sb.DrawString(_font, $"P2 Gamepad: {GameSettings.Player2.GamePadButton}", new Vector2(centerX + 80, y + 470), Color.White);
-        DrawButton(_btnP2Pad, _rebindState == RebindState.P2Pad ? "Presione un botón..." : "Cambiar Botón P2");
+        DrawButton(_btnP2Pad, _rebindState == RebindState.P2Pad ? "Presione un boton..." : "Cambiar Boton P2");
 
         // Notas para íconos e integración Gum
         // Para reemplazar los botones por imágenes (cruz/engranaje/sliders), cargá Texture2D con Core.Content.Load<Texture2D>("images/tuimagen")

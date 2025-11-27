@@ -29,6 +29,7 @@ public class GameOverScene : Scene
     {
         _titleFont = Core.Content.Load<SpriteFont>("fonts/titleFont");
         _font = Core.Content.Load<SpriteFont>("fonts/mainFont");
+        //if(_font == null) Core.Instance.Exit();
         _pixel = new Texture2D(Core.GraphicsDevice, 1, 1);
         _pixel.SetData(new[] { Color.White });
 
@@ -72,7 +73,7 @@ public class GameOverScene : Scene
         sb.DrawString(_font, _winnerText, new Vector2(vp.Width/2f - wsize.X/2f, vp.Height/2f - 40), Color.White);
 
         DrawButton(_btnRetry, "Reintentar");
-        DrawButton(_btnMenu,  "Menú");
+        DrawButton(_btnMenu,  "Menu");
 
         sb.End();
     }

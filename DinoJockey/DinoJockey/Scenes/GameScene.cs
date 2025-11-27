@@ -157,7 +157,7 @@ public class GameScene: Scene
             _timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
             if( _timer >= 2f)
             {
-                UnloadContent();
+                //UnloadContent();
                 Core.ChangeScene(new GameOverScene(winner));
             }
         }

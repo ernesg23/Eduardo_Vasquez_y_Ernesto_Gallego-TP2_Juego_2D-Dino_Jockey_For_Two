@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ernes\\OneDrive\\Documentos\\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two\\DinoJockey\\MonoGameLibrary\\MonoGameLibrary.csproj": {}
+    "C:\\Users\\Alumno\\Desktop\\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two\\DinoJockey\\MonoGameLibrary\\MonoGameLibrary.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ernes\\OneDrive\\Documentos\\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two\\DinoJockey\\MonoGameLibrary\\MonoGameLibrary.csproj": {
+    "C:\\Users\\Alumno\\Desktop\\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two\\DinoJockey\\MonoGameLibrary\\MonoGameLibrary.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ernes\\OneDrive\\Documentos\\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two\\DinoJockey\\MonoGameLibrary\\MonoGameLibrary.csproj",
+        "projectUniqueName": "C:\\Users\\Alumno\\Desktop\\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two\\DinoJockey\\MonoGameLibrary\\MonoGameLibrary.csproj",
         "projectName": "MonoGameLibrary",
-        "projectPath": "C:\\Users\\ernes\\OneDrive\\Documentos\\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two\\DinoJockey\\MonoGameLibrary\\MonoGameLibrary.csproj",
-        "packagesPath": "C:\\Users\\ernes\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ernes\\OneDrive\\Documentos\\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two\\DinoJockey\\MonoGameLibrary\\obj\\",
+        "projectPath": "C:\\Users\\Alumno\\Desktop\\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two\\DinoJockey\\MonoGameLibrary\\MonoGameLibrary.csproj",
+        "packagesPath": "C:\\Users\\Alumno\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Alumno\\Desktop\\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two\\DinoJockey\\MonoGameLibrary\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\ernes\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Alumno\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -73,7 +73,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.307/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
