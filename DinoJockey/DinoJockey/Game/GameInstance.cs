@@ -45,6 +45,8 @@ public class GameInstance
     private SoundEffect _push;
     private bool _countSound = true;
     private SoundEffect _jump;
+    private PlayerIndex _padIndex;
+    private Buttons _padButton;
 
     public GameInstance(
         AudioController audio,
@@ -60,7 +62,9 @@ public class GameInstance
         string name,
         Vector2 position,
         Rectangle bounds,
-        Keys key
+        Keys key,
+        PlayerIndex padIndex,
+        Buttons padButton
     )
     {
         _audio = audio;
@@ -79,8 +83,10 @@ public class GameInstance
         Name = name;
         _position = position;
         _key = key;
+        _padIndex = padIndex;
+        _padButton = padButton;
         _bounds = bounds;
-        _player = new Player(audio, jump, push, atlas, new Vector2(_bounds.Left, _floorPos), _key);
+        _player = new Player(audio, jump, push, atlas, new Vector2(_bounds.Left, _floorPos), _key, _padIndex, _padButton);
     }
 
     public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -169,12 +175,12 @@ public class GameInstance
         );
     }
 
-    public void Update(GameTime gameTime, KeyboardInfo keyboard)
+    public void Update(GameTime gameTime, KeyboardInfo keyboard, GamePadInfo gamepad)
     {
-        _player.Update(gameTime, keyboard);
+        _player.Update(gameTime, keyboard, gamepad);
 
         if (Status == GameStatus.Waiting)
-            checkWaiting(gameTime, keyboard);
+            checkWaiting(gameTime, keyboard, gamepad);
         else if (Status == GameStatus.Counting)
             checkCounting(gameTime);
         else if (Status == GameStatus.Starting)
@@ -186,9 +192,11 @@ public class GameInstance
         }
     }
 
-    private void checkWaiting(GameTime gameTime, KeyboardInfo keyboard)
+    private void checkWaiting(GameTime gameTime, KeyboardInfo keyboard, GamePadInfo gamepad)
     {
-        if (keyboard.WasKeyJustPressed(_key))
+        bool keyPressed = keyboard.WasKeyJustPressed(_key);
+        bool padPressed = gamepad != null && gamepad.PlayerIndex == _padIndex && gamepad.WasButtonJustPressed(_padButton);
+        if (keyPressed || padPressed)
         {
             _audio.PlaySoundEffect(_jump);
             Status = GameStatus.ReadyToStart;

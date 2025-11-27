@@ -35,3 +35,16 @@ C:\Users\espar\OneDrive\Escritorio\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2
 C:\Users\espar\OneDrive\Escritorio\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two\DinoJockey\MonoGameLibrary\obj\Debug\net8.0\refint\MonoGameLibrary.dll
 C:\Users\espar\OneDrive\Escritorio\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two\DinoJockey\MonoGameLibrary\obj\Debug\net8.0\MonoGameLibrary.pdb
 C:\Users\espar\OneDrive\Escritorio\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two\DinoJockey\MonoGameLibrary\obj\Debug\net8.0\ref\MonoGameLibrary.dll
+C:\Users\ernes\OneDrive\Documentos\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two\DinoJockey\MonoGameLibrary\bin\Debug\net8.0\MonoGameLibrary.deps.json
+C:\Users\ernes\OneDrive\Documentos\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two\DinoJockey\MonoGameLibrary\bin\Debug\net8.0\MonoGameLibrary.dll
+C:\Users\ernes\OneDrive\Documentos\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two\DinoJockey\MonoGameLibrary\bin\Debug\net8.0\MonoGameLibrary.pdb
+C:\Users\ernes\OneDrive\Documentos\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two\DinoJockey\MonoGameLibrary\obj\Debug\net8.0\MonoGameLibrary.csproj.AssemblyReference.cache
+C:\Users\ernes\OneDrive\Documentos\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two\DinoJockey\MonoGameLibrary\obj\Debug\net8.0\MonoGameLibrary.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ernes\OneDrive\Documentos\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two\DinoJockey\MonoGameLibrary\obj\Debug\net8.0\MonoGameLibrary.AssemblyInfoInputs.cache
+C:\Users\ernes\OneDrive\Documentos\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two\DinoJockey\MonoGameLibrary\obj\Debug\net8.0\MonoGameLibrary.AssemblyInfo.cs
+C:\Users\ernes\OneDrive\Documentos\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two\DinoJockey\MonoGameLibrary\obj\Debug\net8.0\MonoGameLibrary.csproj.CoreCompileInputs.cache
+C:\Users\ernes\OneDrive\Documentos\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two\DinoJockey\MonoGameLibrary\obj\Debug\net8.0\MonoGameLibrary.sourcelink.json
+C:\Users\ernes\OneDrive\Documentos\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two\DinoJockey\MonoGameLibrary\obj\Debug\net8.0\MonoGameLibrary.dll
+C:\Users\ernes\OneDrive\Documentos\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two\DinoJockey\MonoGameLibrary\obj\Debug\net8.0\refint\MonoGameLibrary.dll
+C:\Users\ernes\OneDrive\Documentos\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two\DinoJockey\MonoGameLibrary\obj\Debug\net8.0\MonoGameLibrary.pdb
+C:\Users\ernes\OneDrive\Documentos\Eduardo_Vasquez_y_Ernesto_Gallego-TP2_Juego_2D-Dino_Jockey_For_Two\DinoJockey\MonoGameLibrary\obj\Debug\net8.0\ref\MonoGameLibrary.dll

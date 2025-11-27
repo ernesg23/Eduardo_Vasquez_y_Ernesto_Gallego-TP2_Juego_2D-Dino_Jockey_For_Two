@@ -7,11 +7,14 @@ using Microsoft.Xna.Framework.Media;
 using MonoGameLibrary;
 using MonoGameLibrary.Graphics;
 using MonoGameLibrary.Scenes;
+using MonoGameLibrary.Input;
+using MonoGameLibrary.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MonoGameGum;
 
 namespace DinoJockey.Scenes;
 
@@ -37,6 +40,8 @@ public class GameScene: Scene
     }
     public override void LoadContent()
     {
+        // En juego ocultamos el mouse
+        Core.Instance.IsMouseVisible = false;
         int halfHeigthScreen = Core.GraphicsDevice.Viewport.Height / 2;
         int widthScreen = Core.GraphicsDevice.Viewport.Width;
         _atlas = TextureAtlas.FromFile(Content, "images/full-atlas.xml");
@@ -64,7 +69,9 @@ public class GameScene: Scene
             "Jugador 1", 
             Vector2.Zero,
             new Rectangle(0, 0, widthScreen, (int)(halfHeigthScreen * 0.98f) ),
-            Keys.Up
+            GameSettings.Player1.KeyboardKey,
+            GameSettings.Player1.GamePadIndex,
+            GameSettings.Player1.GamePadButton
         );
         _game2 = new GameInstance(
             Core.Audio,
@@ -85,13 +92,15 @@ public class GameScene: Scene
                 widthScreen, 
                 (int)(halfHeigthScreen * 0.98f)
             ),
-            Keys.W
+            GameSettings.Player2.KeyboardKey,
+            GameSettings.Player2.GamePadIndex,
+            GameSettings.Player2.GamePadButton
         );
     }
     public override void Update(GameTime gameTime)
     {
-        _game1.Update(gameTime, Core.Input.Keyboard);
-        _game2.Update(gameTime, Core.Input.Keyboard);
+        _game1.Update(gameTime, Core.Input.Keyboard, Core.Input.GamePads[(int)GameSettings.Player1.GamePadIndex]);
+        _game2.Update(gameTime, Core.Input.Keyboard, Core.Input.GamePads[(int)GameSettings.Player2.GamePadIndex]);
         CheckReady(gameTime);
         CheckPlaying(gameTime);
         checkSong();
@@ -149,8 +158,7 @@ public class GameScene: Scene
             if( _timer >= 2f)
             {
                 UnloadContent();
-                //Core.Instance.Exit();
-                //Core.ChangeScene(new GameOverScene(winner));
+                Core.ChangeScene(new GameOverScene(winner));
             }
         }
     }

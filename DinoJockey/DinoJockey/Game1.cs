@@ -15,9 +15,10 @@ namespace DinoJockey
             // TODO: Add your initialization logic here
 
             base.Initialize();
-            IsMouseVisible = false;
+            IsMouseVisible = true;
 
-            ChangeScene(new GameScene());
+            // Iniciar en el menú de inicio
+            ChangeScene(new StartMenuScene());
         }
 
         protected override void LoadContent()

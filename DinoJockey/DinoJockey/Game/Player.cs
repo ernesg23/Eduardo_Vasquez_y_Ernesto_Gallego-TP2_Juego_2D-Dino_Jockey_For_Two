@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using MonoGameLibrary.Audio;
 using MonoGameLibrary.Graphics;
 using MonoGameLibrary.Input;
+using MonoGameLibrary.Settings;
 using System;
 using System.Collections.Generic;
 
@@ -24,6 +25,8 @@ public class Player
     );
     private Keys _key;
     private float _floorY;
+    private PlayerIndex _padIndex;
+    private Buttons _padButton;
 
     // Variables para el salto dinámico
     private float _jumpVelocity = 0f;
@@ -42,7 +45,7 @@ public class Player
     public PlayerStatus Status { get; private set; } = PlayerStatus.Waiting;
     private PlayerStatus _prevStatus;
 
-    public Player(AudioController audio, SoundEffect jump, SoundEffect push, TextureAtlas atlas, Vector2 position, Keys key)
+    public Player(AudioController audio, SoundEffect jump, SoundEffect push, TextureAtlas atlas, Vector2 position, Keys key, PlayerIndex padIndex, Buttons padButton)
     {
         _audio = audio;
         _jump = jump;
@@ -59,19 +62,21 @@ public class Player
         _sprite.Scale = Vector2.One * 1.5f;
 
         _key = key;
+        _padIndex = padIndex;
+        _padButton = padButton;
         _floorY = position.Y;
 
         Position = position;
         Position.X -= _sprite.Width / 2f;
     }
 
-    public void Update(GameTime gameTime, KeyboardInfo keyboard)
+    public void Update(GameTime gameTime, KeyboardInfo keyboard, GamePadInfo gamepad)
     {
-        checkStatus(gameTime, keyboard);
+        checkStatus(gameTime, keyboard, gamepad);
         _sprite.Update(gameTime);
     }
 
-    private void checkStatus(GameTime gameTime, KeyboardInfo keyboard)
+    private void checkStatus(GameTime gameTime, KeyboardInfo keyboard, GamePadInfo gamepad)
     {
         float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -84,14 +89,16 @@ public class Player
         {
             checkPrevStatus();
 
-            // Solo saltar si se presiona la tecla y no estamos ya saltando
-            if (keyboard.IsKeyDown(_key) && !_isJumping)
+            // Solo saltar si se presiona la tecla o el botón y no estamos ya saltando
+            bool jumpKey = keyboard.IsKeyDown(_key);
+            bool jumpButton = gamepad != null && gamepad.PlayerIndex == _padIndex && gamepad.IsButtonDown(_padButton);
+            if ((jumpKey || jumpButton) && !_isJumping)
                 StartJump();
         }
         else if (Status == PlayerStatus.Jumping || Status == PlayerStatus.Falling)
         {
             checkPrevStatus();
-            UpdateJump(deltaTime, keyboard);
+            UpdateJump(deltaTime, keyboard, gamepad);
         }
         else if(Status == PlayerStatus.Dead)
         {
@@ -109,13 +116,15 @@ public class Player
         Status = PlayerStatus.Jumping;
     }
 
-    private void UpdateJump(float deltaTime, KeyboardInfo keyboard)
+    private void UpdateJump(float deltaTime, KeyboardInfo keyboard, GamePadInfo gamepad)
     {
         // Actualizar altura actual del salto
         _currentJumpHeight = _floorY - Position.Y;
 
-        // Verificar si el jugador soltó la tecla de salto
-        if (keyboard.WasKeyJustReleased(_key))
+        // Verificar si el jugador soltó la tecla o el botón de salto
+        bool releasedKey = keyboard.WasKeyJustReleased(_key);
+        bool releasedButton = gamepad != null && gamepad.PlayerIndex == _padIndex && gamepad.WasButtonJustReleased(_padButton);
+        if (releasedKey || releasedButton)
         {
             _isHoldingJump = false;
         }
